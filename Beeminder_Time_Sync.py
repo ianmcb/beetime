@@ -1,40 +1,15 @@
-# -*- coding: utf-8 -*-
-# by: muflax <mail@muflax.com>, 2012
+# Modified from Beeminder_Sync.py by muflax
+# This add-on sends your time spent reviewing to Beeminder (beeminder.com).
+# All code is public domain.
 
-# This add-on sends your review stats to Beeminder (beeminder.com) and so keeps
-# your graphs up-to-date.
-#
-# Experimental! Use at your own risk.
-#
-# 1. Create goal at Beeminder.
-# 2. Use type Odometer.
-# 3. Set variables in add-on file.
-# 4. Review!
-# 5. Sync to AnkiWeb.
-
-####################################################
-# Adjust these variables to your beeminder config. #
-####################################################
 # Login Info
-ACCOUNT = "your account" # beeminder account name
-TOKEN   = "your token"   # available at <https://www.beeminder.com/api/v1/auth_token.json>
+USER  = "" # beeminder account name
+TOKEN = "01234567890123456789" # available at <https://www.beeminder.com/api/v1/auth_token.json>
+SLUG = "anki" # Goal for time spent reviewing.
 
-# Goal names - Set either to "" if you don't use this kind of goal. The name is the short part in the URL.
-REP_GOAL = "anki" # Goal for total reviews / day, e.g. "anki" if your goal is called "anki".
-NEW_GOAL = ""     # goal for new cards / day, e.g. "anki-new".
-
-# Offsets - Skip that many earlier reps so your graph can start at 0 (for old decks - set to 0 if unsure).
-REP_OFFSET = 0
-NEW_OFFSET = 0
-
-#####################
-# Code starts here. #
-#####################
-
-# Debug - Skip this.
 SEND_DATA = True # set to True to actually send data
 
-from anki.hooks import wrap
+from anki.hooks import addHook
 import anki.sync
 from aqt import mw
 from aqt.qt import *
@@ -42,6 +17,20 @@ from aqt.utils import showInfo, openLink
 
 import datetime
 import httplib, urllib
+import types
+import json
+
+def checkDatapoints(date, time, slug):
+    """Check the existing datapoint for the day and return its ID if present,
+    True if not."""
+    datapoints = getApi(USER, TOKEN, slug)
+    datapoints = json.loads(datapoints)
+    dayStamp = datetime.date.fromtimestamp(float(date)).strftime('%Y%m%d')
+    if datapoints[0]['daystamp'] == dayStamp:
+        datapointId = datapoints[0]['id']
+    else:
+        datapointId = None
+    return datapointId
 
 def checkCollection(col=None, force=False):
     """Check for unreported cards and send them to beeminder."""
@@ -49,75 +38,71 @@ def checkCollection(col=None, force=False):
     if col is None:
         return
 
-    # reviews
-    if REP_GOAL:
-        reps           = col.db.first("select count() from revlog")[0]
-        last_timestamp = col.conf.get("beeminderRepTimestamp", 0)
-        timestamp      = col.db.first("select id/1000 from revlog order by id desc limit 1")
-        if timestamp is not None:
-            timestamp = timestamp[0]
-        reportCards(col, reps, timestamp, "beeminderRepTotal", REP_GOAL, REP_OFFSET)
+    # time spent reviewing
+    reviewTime = col.db.scalar("""
+select sum(time)/1000 from revlog
+where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
 
-        if (force or timestamp != last_timestamp) and SEND_DATA:
-            col.conf["beeminderRepTimestamp"] = timestamp
-            col.setMod()
+    if reviewTime is None:
+        reviewTime = 0
+    reviewTime /= 60.0
 
-    # new cards
-    if NEW_GOAL:
-        new_cards      = col.db.first("select count(distinct(cid)) from revlog where type = 0")[0]
-        last_timestamp = col.conf.get("beeminderNewTimestamp", 0)
-        timestamp      = col.db.first("select id/1000 from revlog where type = 0 order by id desc limit 1")
-        if timestamp is not None:
-            timestamp = timestamp[0]
-        reportCards(col, new_cards, timestamp, "beeminderNewTotal", NEW_GOAL, NEW_OFFSET)
+    reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
+    reportTime(col, reviewTime, reportTimestamp, SLUG, force)
 
-        if (force or timestamp != last_timestamp) and SEND_DATA:
-            col.conf["beeminderNewTimestamp"] = timestamp
-            col.setMod()
+    if SEND_DATA or force:
+        col.setMod()
 
-    if force and (REP_GOAL or NEW_GOAL):
-        showInfo("Synced with Beeminder.")
-
-def reportCards(col, total, timestamp, count_type, goal, offset=0, force=False):
-    """Sync card counts and send them to beeminder."""
-
+def reportTime(col, time, timestamp, slug, force=False):
+    """Prepare the API call to beeminder."""
     if not SEND_DATA:
-        print "type:", count_type, "count:", total
-
-    # get last count and new total
-    last_total = col.conf.get(count_type, 0)
-    total      = max(0, total - offset)
-
-    if not force and (total <= 0 or total == last_total):
-        if not SEND_DATA:
-            print "nothing to report..."
         return
-
-    if total < last_total: #something went wrong
-        raise Exception("Beeminder total smaller than before")
 
     # build data
     date = "%d" % timestamp
-    comment = "anki update (+%d)" % (total - last_total)
+    comment = "beetime add-on"
     data = {
         "date": date,
-        "value": total,
+        "value": time,
         "comment": comment,
     }
 
+    datapointId = checkDatapoints(date, time, slug)
+
     if SEND_DATA:
-        account = ACCOUNT
-        token = TOKEN
-        sendApi(ACCOUNT, TOKEN, goal, data)
-        col.conf[count_type] = total
+        sendApi(USER, TOKEN, slug, data, datapointId)
     else:
         print "would send:"
         print data
 
-def sendApi(account, token, goal, data):
+def getApi(user, token, slug):
     base = "www.beeminder.com"
     cmd = "datapoints"
-    api = "/api/v1/users/%s/goals/%s/%s.json" % (account, goal, cmd)
+    api = "/api/v1/users/%s/goals/%s/%s.json" % (user, slug, cmd)
+
+    headers = {"Content-type": "application/x-www-form-urlencoded",
+               "Accept": "text/plain"}
+
+    params = urllib.urlencode({"auth_token": token})
+
+    conn = httplib.HTTPSConnection(base)
+    conn.request("GET", api, params, headers)
+    response = conn.getresponse()
+    if not response.status == 200:
+        raise Exception("transmission failed:", response.status, response.reason, response.read())
+    responseBody = response.read()
+    conn.close()
+    return responseBody
+
+def sendApi(user, token, slug, data, did=None):
+    base = "www.beeminder.com"
+    cmd = "datapoints"
+    if did is None:
+        api = "/api/v1/users/%s/goals/%s/%s.json" % (user, slug, cmd)
+        apiRequest = "POST"
+    else:
+        api = "/api/v1/users/%s/goals/%s/%s/%s.json" % (user, slug, cmd, did)
+        apiRequest = "PUT"
 
     headers = {"Content-type": "application/x-www-form-urlencoded",
                "Accept": "text/plain"}
@@ -128,26 +113,14 @@ def sendApi(account, token, goal, data):
                                "auth_token": token})
 
     conn = httplib.HTTPSConnection(base)
-    conn.request("POST", api, params, headers)
+    conn.request(apiRequest, api, params, headers)
     response = conn.getresponse()
     if not response.status == 200:
         raise Exception("transmission failed:", response.status, response.reason, response.read())
     conn.close()
 
-def beeminderUpdate(obj, _old=None):
-    ret = _old(obj)
+def beetimeHook():
     col = mw.col or mw.syncer.thread.col
-    if col is not None:
-        checkCollection(col)
+    checkCollection(col, True)
 
-    return ret
-
-# convert time to timestamp because python sucks
-def timestamp(time):
-    epoch = datetime.datetime.utcfromtimestamp(0)
-    delta = time - epoch
-    timestamp = "%d" % delta.total_seconds()
-    return timestamp
-
-# run update whenever we sync a deck
-anki.sync.Syncer.sync = wrap(anki.sync.Syncer.sync, beeminderUpdate, "around")
+addHook("unloadProfile", beetimeHook)
