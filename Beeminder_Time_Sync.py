@@ -1,4 +1,3 @@
-# Modified from Beeminder_Sync.py by muflax
 # This add-on sends your time spent reviewing to Beeminder (beeminder.com).
 # All code is public domain.
 
@@ -10,7 +9,6 @@ SLUG = "anki" # Goal for time spent reviewing.
 SEND_DATA = True # set to True to actually send data
 
 from anki.hooks import addHook
-import anki.sync
 from aqt import mw
 from aqt.qt import *
 from aqt.utils import showInfo, openLink
@@ -120,7 +118,6 @@ def sendApi(user, token, slug, data, did=None):
     conn.close()
 
 def beetimeHook():
-    col = mw.col or mw.syncer.thread.col
-    checkCollection(col, True)
+    checkCollection(mw.col, True)
 
 addHook("unloadProfile", beetimeHook)
