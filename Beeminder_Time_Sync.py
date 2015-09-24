@@ -1,6 +1,6 @@
 # This add-on sends your time spent reviewing to Beeminder.
 # All code is public domain.
-# v1.0.2
+# v1.0.3
 
 # Beeminder u/n
 USER = ""
@@ -14,12 +14,9 @@ SEND_DATA = True
 
 from anki.hooks import addHook
 from aqt import mw
-from aqt.qt import *
-from aqt.utils import showInfo, openLink
 
 import datetime
 import httplib, urllib
-import types
 import json
 
 def checkDatapoints(date, time, slug):
