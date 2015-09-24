@@ -44,7 +44,8 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
 
     if reviewTime is None:
         reviewTime = 0
-    reviewTime /= 60.0
+    # convert seconds to hours
+    reviewTime /= 60.0 * 60.0
 
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
     reportTime(col, reviewTime, reportTimestamp, SLUG, force)
