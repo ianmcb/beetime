@@ -1,13 +1,16 @@
 # This add-on sends your time spent reviewing to Beeminder (beeminder.com).
 # All code is public domain.
-# v1.0
+# v1.0.1
 
-# Login Info
-USER  = "" # beeminder account name
-TOKEN = "01234567890123456789" # available at <https://www.beeminder.com/api/v1/auth_token.json>
-SLUG = "anki" # Goal for time spent reviewing.
-
-SEND_DATA = True # set to True to actually send data
+# Beeminder u/n
+USER = ""
+# authentication token
+# available at <https://www.beeminder.com/api/v1/auth_token.json>
+TOKEN = "01234567890123456789"
+# goal name for time spent reviewing
+SLUG = "anki"
+# set to True to actually send data
+SEND_DATA = True
 
 from anki.hooks import addHook
 from aqt import mw
@@ -20,8 +23,9 @@ import types
 import json
 
 def checkDatapoints(date, time, slug):
-    """Check the existing datapoint for the day and return its ID if present,
-    True if not."""
+    """Check if there's already a datapoint for the current day and
+    return its ID if present, None if not.
+    """
     datapoints = getApi(USER, TOKEN, slug)
     datapoints = json.loads(datapoints)
     dayStamp = datetime.date.fromtimestamp(float(date)).strftime('%Y%m%d')
@@ -32,7 +36,9 @@ def checkDatapoints(date, time, slug):
     return datapointId
 
 def checkCollection(col=None, force=False):
-    """Check for unreported cards and send them to beeminder."""
+    """At time of shutdown (profile unloading), tally the time spent reviewing
+    and send it to Beeminder.
+    """
     col = col or mw.col
     if col is None:
         return
@@ -76,6 +82,7 @@ def reportTime(col, time, timestamp, slug, force=False):
         print data
 
 def getApi(user, token, slug):
+    """Get the datapoints for a given goal from Beeminder."""
     base = "www.beeminder.com"
     cmd = "datapoints"
     api = "/api/v1/users/%s/goals/%s/%s.json" % (user, slug, cmd)
@@ -95,6 +102,10 @@ def getApi(user, token, slug):
     return responseBody
 
 def sendApi(user, token, slug, data, did=None):
+    """Send or update a datapoint to a given Beeminder goal. If a
+    datapoint ID (did) is given, the existing datapoint is updated.
+    Otherwise a new datapoint is created.
+    """
     base = "www.beeminder.com"
     cmd = "datapoints"
     if did is None:
