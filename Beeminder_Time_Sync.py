@@ -83,17 +83,36 @@ def reportTime(col, time, timestamp, slug, force=False):
 
 def getApi(user, token, slug):
     """Get the datapoints for a given goal from Beeminder."""
+    return apiCall("GET", user, token, slug, None, None)
+
+def sendApi(user, token, slug, data, did=None):
+    """Send or update a datapoint to a given Beeminder goal. If a
+    datapoint ID (did) is given, the existing datapoint is updated.
+    Otherwise a new datapoint is created.
+    """
+    apiCall("POST", user, token, slug, data, did)
+
+def apiCall(requestType, user, token, slug, data, did):
     base = "www.beeminder.com"
     cmd = "datapoints"
     api = "/api/v1/users/%s/goals/%s/%s.json" % (user, slug, cmd)
+    if requestType == "POST" and did is not None:
+        api = "/api/v1/users/%s/goals/%s/%s/%s.json" % (user, slug, cmd, did)
+        requestType = "PUT"
 
     headers = {"Content-type": "application/x-www-form-urlencoded",
                "Accept": "text/plain"}
 
-    params = urllib.urlencode({"auth_token": token})
+    if requestType == "GET":
+        params = urllib.urlencode({"auth_token": token})
+    else:
+        params = urllib.urlencode({"timestamp": data["date"],
+                                   "value": data["value"],
+                                   "comment": data["comment"],
+                                   "auth_token": token})
 
     conn = httplib.HTTPSConnection(base)
-    conn.request("GET", api, params, headers)
+    conn.request(requestType, api, params, headers)
     response = conn.getresponse()
     if not response.status == 200:
         raise Exception("transmission failed:", response.status, response.reason, response.read())
@@ -101,34 +120,6 @@ def getApi(user, token, slug):
     conn.close()
     return responseBody
 
-def sendApi(user, token, slug, data, did=None):
-    """Send or update a datapoint to a given Beeminder goal. If a
-    datapoint ID (did) is given, the existing datapoint is updated.
-    Otherwise a new datapoint is created.
-    """
-    base = "www.beeminder.com"
-    cmd = "datapoints"
-    if did is None:
-        api = "/api/v1/users/%s/goals/%s/%s.json" % (user, slug, cmd)
-        apiRequest = "POST"
-    else:
-        api = "/api/v1/users/%s/goals/%s/%s/%s.json" % (user, slug, cmd, did)
-        apiRequest = "PUT"
-
-    headers = {"Content-type": "application/x-www-form-urlencoded",
-               "Accept": "text/plain"}
-
-    params = urllib.urlencode({"timestamp": data["date"],
-                               "value": data["value"],
-                               "comment": data["comment"],
-                               "auth_token": token})
-
-    conn = httplib.HTTPSConnection(base)
-    conn.request(apiRequest, api, params, headers)
-    response = conn.getresponse()
-    if not response.status == 200:
-        raise Exception("transmission failed:", response.status, response.reason, response.read())
-    conn.close()
 
 def beetimeHook():
     checkCollection(mw.col, True)
