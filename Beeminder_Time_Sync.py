@@ -1,11 +1,11 @@
-# This add-on sends your time spent reviewing to Beeminder (beeminder.com).
+# This add-on sends your time spent reviewing to Beeminder.
 # All code is public domain.
-# v1.0.1
+# v1.0.2
 
 # Beeminder u/n
 USER = ""
-# authentication token
-# available at <https://www.beeminder.com/api/v1/auth_token.json>
+# authentication token, available at
+# <https://www.beeminder.com/api/v1/auth_token.json>
 TOKEN = "01234567890123456789"
 # goal name for time spent reviewing
 SLUG = "anki"
