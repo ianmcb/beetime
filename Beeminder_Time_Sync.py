@@ -53,9 +53,6 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
     reportTime(col, reviewTime, reportTimestamp, SLUG)
 
-    if SEND_DATA
-        col.setMod()
-
 def reportTime(col, time, timestamp, slug):
     """Prepare the API call to beeminder."""
     if not SEND_DATA:
