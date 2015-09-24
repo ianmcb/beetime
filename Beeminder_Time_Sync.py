@@ -1,5 +1,6 @@
 # This add-on sends your time spent reviewing to Beeminder (beeminder.com).
 # All code is public domain.
+# v1.0
 
 # Login Info
 USER  = "" # beeminder account name
