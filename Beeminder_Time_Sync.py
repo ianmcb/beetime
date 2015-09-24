@@ -35,7 +35,7 @@ def checkDatapoints(date, time, slug):
         datapointId = None
     return datapointId
 
-def checkCollection(col=None, force=False):
+def checkCollection(col=None):
     """At time of shutdown (profile unloading), tally the time spent reviewing
     and send it to Beeminder.
     """
@@ -54,12 +54,12 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     reviewTime /= 60.0 * 60.0
 
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
-    reportTime(col, reviewTime, reportTimestamp, SLUG, force)
+    reportTime(col, reviewTime, reportTimestamp, SLUG)
 
-    if SEND_DATA or force:
+    if SEND_DATA
         col.setMod()
 
-def reportTime(col, time, timestamp, slug, force=False):
+def reportTime(col, time, timestamp, slug):
     """Prepare the API call to beeminder."""
     if not SEND_DATA:
         return
@@ -120,8 +120,7 @@ def apiCall(requestType, user, token, slug, data, did):
     conn.close()
     return responseBody
 
-
 def beetimeHook():
-    checkCollection(mw.col, True)
+    checkCollection(mw.col)
 
 addHook("unloadProfile", beetimeHook)
