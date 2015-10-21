@@ -1,6 +1,6 @@
 # This add-on sends your time spent reviewing to Beeminder.
 # All code is public domain.
-# v1.0.3
+# v1.0.4
 
 # Beeminder u/n
 USER = ""
@@ -13,7 +13,10 @@ SLUG = "anki"
 SEND_DATA = True
 
 from anki.hooks import addHook
+from anki.lang import _, ngettext
+from anki.utils import fmtTimeSpan
 from aqt import mw
+
 
 import datetime
 import httplib, urllib
@@ -41,26 +44,27 @@ def checkCollection(col=None):
         return
 
     # time spent reviewing
-    reviewTime = col.db.scalar("""
-select sum(time)/1000 from revlog
+    numberOfCards, reviewTime = col.db.first("""
+select count(), sum(time)/1000 from revlog
 where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
 
-    if reviewTime is None:
-        reviewTime = 0
+    numberOfCards = numberOfCards or 0
+    reviewTime = reviewTime or 0
+
+    msgp1 = ngettext("%d card", "%d cards", numberOfCards) % numberOfCards
+    comment = _("studied %(a)s in %(b)s") % dict(a=msgp1,
+            b=fmtTimeSpan(reviewTime, unit=1))
+
     # convert seconds to hours
     reviewTime /= 60.0 * 60.0
 
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
-    reportTime(col, reviewTime, reportTimestamp, SLUG)
+    reportTime(col, reviewTime, comment, reportTimestamp, SLUG)
 
-def reportTime(col, time, timestamp, slug):
+def reportTime(col, time, comment, timestamp, slug):
     """Prepare the API call to beeminder."""
-    if not SEND_DATA:
-        return
-
     # build data
     date = "%d" % timestamp
-    comment = "beetime add-on"
     data = {
         "date": date,
         "value": time,
