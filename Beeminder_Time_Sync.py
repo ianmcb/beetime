@@ -157,11 +157,14 @@ class BeeminderSettings(QDialog):
         self.close()
 
     def onAccept(self):
-        helloWorld = self.ui.goalname.text()
-        #informUser = QMessageBox()
-        #informUser.setText("Hi %s!" % helloWorld)
-        #informUser.exec()
-        showInfo("Hi %s!" % helloWorld)
+        beeminderEnabled = self.ui.beeminder_groupBox.isChecked()
+        beeSyncAtShutdown = self.ui.sync_at_shutdown.isChecked()
+        beeSyncAfterAnkiWeb = self.ui.sync_after_ankiweb.isChecked()
+        # not yet implemented
+        beeOverwrite = True # not self.ui.premium_groupBox.isChecked() or ...
+        goalname = self.ui.goalname.text()
+        api_key = self.ui.api_key.text()
+        showInfo("Goalname is %s. API key is %s.!" % (goalname, api_key))
         self.close()
 
 dialog = None
