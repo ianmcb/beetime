@@ -146,7 +146,7 @@ class BeeminderSettings(QDialog):
         self.ui = Ui_BeeminderSettings()
         self.ui.setupUi(self)
 
-        self.connect(self, SIGNAL("rejected()"), self.onReject)
+        self.connect(self.ui.buttonBox, SIGNAL("rejected()"), self.onReject)
         self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)
 
     def display(self, parent):
@@ -154,7 +154,7 @@ class BeeminderSettings(QDialog):
         self.show()
 
     def onReject(self):
-        pass
+        self.close()
 
     def onAccept(self):
         helloWorld = self.ui.goalname.text()
@@ -162,6 +162,7 @@ class BeeminderSettings(QDialog):
         #informUser.setText("Hi %s!" % helloWorld)
         #informUser.exec()
         showInfo("Hi %s!" % helloWorld)
+        self.close()
 
 dialog = None
 def openBeeminderSettings(parent):
