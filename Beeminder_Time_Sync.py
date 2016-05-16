@@ -16,7 +16,8 @@ from anki.hooks import addHook
 from anki.lang import _, ngettext
 from anki.utils import fmtTimeSpan
 from aqt import mw
-
+from aqt.utils import showInfo
+from aqt.qt import QAction, SIGNAL
 
 import datetime
 import httplib, urllib
@@ -121,4 +122,54 @@ def apiCall(requestType, user, token, slug, data, did):
 def beetimeHook():
     checkCollection(mw.col)
 
-addHook("unloadProfile", beetimeHook)
+#addHook("unloadProfile", beetimeHook)
+
+def testFunction():
+    checkCollection(mw.col)
+
+# create a menu item to manually sync with beeminder
+sync_with_beeminder = QAction("Sync with Beeminder", mw)
+mw.connect(sync_with_beeminder, SIGNAL("triggered()"), testFunction)
+mw.form.menuTools.addAction(sync_with_beeminder)
+
+# create an options window
+from beeminder_settings import Ui_BeeminderSettings
+
+from aqt.qt import *
+#import  aqt
+
+class BeeminderSettings(QDialog):
+    def __init__(self):
+        QDialog.__init__(self)
+
+        self.mw = mw
+        self.ui = Ui_BeeminderSettings()
+        self.ui.setupUi(self)
+
+        self.connect(self, SIGNAL("rejected()"), self.onReject)
+        self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)
+
+    def display(self, parent):
+        self.parent = parent
+        self.show()
+
+    def onReject(self):
+        pass
+
+    def onAccept(self):
+        helloWorld = self.ui.goalname.text()
+        #informUser = QMessageBox()
+        #informUser.setText("Hi %s!" % helloWorld)
+        #informUser.exec()
+        showInfo("Hi %s!" % helloWorld)
+
+dialog = None
+def openBeeminderSettings(parent):
+    global dialog
+    if dialog is None:
+        dialog = BeeminderSettings()
+    dialog.display(parent)
+
+open_bm_settings = QAction("Setup sync with Beeminder...", mw)
+mw.connect(open_bm_settings, SIGNAL("triggered()"), lambda p=mw: openBeeminderSettings(p))
+mw.form.menuTools.addAction(open_bm_settings)
