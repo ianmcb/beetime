@@ -2,14 +2,7 @@
 # All code is public domain.
 # v1.0.4
 
-# Beeminder u/n
-USER = ""
-# authentication token, available at
-# <https://www.beeminder.com/api/v1/auth_token.json>
-TOKEN = "01234567890123456789"
-# goal name for time spent reviewing
-SLUG = "anki"
-# set to True to actually send data
+BEE = 'bee_conf'
 SEND_DATA = True
 
 from anki.hooks import addHook
@@ -22,6 +15,12 @@ from aqt.qt import QAction, SIGNAL
 import datetime
 import httplib, urllib
 import json
+
+def getConfig():
+    USER = mw.col.conf[BEE]['username']
+    TOKEN = mw.col.conf[BEE]['api_key']
+    SLUG = mw.col.conf[BEE]['goalname']
+    SEND_DATA = mw.col.conf[BEE]['enabled']
 
 def checkDatapoints(date, time, slug):
     """Check if there's already a datapoint for the current day and
@@ -44,6 +43,9 @@ def checkCollection(col=None):
     if col is None:
         return
 
+    # get configuration
+    getConfig()
+
     # time spent reviewing
     numberOfCards, reviewTime = col.db.first("""
 select count(), sum(time)/1000 from revlog
@@ -60,6 +62,7 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     reviewTime /= 60.0 * 60.0
 
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
+    showInfo("Reporting: %s, %s, %s" % (USER, TOKEN, SLUG))
     reportTime(col, reviewTime, comment, reportTimestamp, SLUG)
 
 def reportTime(col, time, comment, timestamp, slug):
@@ -138,6 +141,7 @@ from beeminder_settings import Ui_BeeminderSettings
 from aqt.qt import *
 #import  aqt
 
+beeConf = None
 class BeeminderSettings(QDialog):
     def __init__(self):
         QDialog.__init__(self)
@@ -149,7 +153,35 @@ class BeeminderSettings(QDialog):
         self.connect(self.ui.buttonBox, SIGNAL("rejected()"), self.onReject)
         self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)
 
+
+        beeConfKeys = ["username",
+                "goalname",
+                "api_key",
+                "units"]
+
+        beeConfBools = ["enabled",
+                "shutdown",
+                "ankiweb"]
+
+        if not BEE in mw.col.conf:
+            showInfo("Populating Beeminder %s conf variable" % BEE)
+            mw.col.conf[BEE] = {}
+            for key in beeConfKeys:
+                mw.col.conf[BEE][key] = None
+            for key in beeConfBools:
+                mw.col.conf[BEE][key] = False
+            mw.col.conf[BEE]['enabled'] = True
+
     def display(self, parent):
+        self.ui.username.setText(mw.col.conf[BEE]['username'])
+        self.ui.goalname.setText(mw.col.conf[BEE]['goalname'])
+        self.ui.api_key.setText(mw.col.conf[BEE]['api_key'])
+        #self.ui.goal_units.setText(mw.col.conf[BEE]['units'])
+
+        self.ui.beeminder_groupBox.setChecked(mw.col.conf[BEE]['enabled'])
+        self.ui.sync_at_shutdown.setChecked(mw.col.conf[BEE]['shutdown'])
+        self.ui.sync_after_ankiweb.setChecked(mw.col.conf[BEE]['ankiweb'])
+
         self.parent = parent
         self.show()
 
@@ -157,14 +189,21 @@ class BeeminderSettings(QDialog):
         self.close()
 
     def onAccept(self):
-        beeminderEnabled = self.ui.beeminder_groupBox.isChecked()
-        beeSyncAtShutdown = self.ui.sync_at_shutdown.isChecked()
-        beeSyncAfterAnkiWeb = self.ui.sync_after_ankiweb.isChecked()
+        enabled = self.ui.beeminder_groupBox.isChecked()
+        syncAtShutdown = self.ui.sync_at_shutdown.isChecked()
+        syncAfterAnkiWeb = self.ui.sync_after_ankiweb.isChecked()
         # not yet implemented
-        beeOverwrite = True # not self.ui.premium_groupBox.isChecked() or ...
-        goalname = self.ui.goalname.text()
+        overwrite = True # not self.ui.premium_groupBox.isChecked() or ...
+        username = self.ui.username.text()
         api_key = self.ui.api_key.text()
+        goalname = self.ui.goalname.text()
         showInfo("Goalname is %s. API key is %s.!" % (goalname, api_key))
+        mw.col.conf[BEE]['username'] = username
+        mw.col.conf[BEE]['api_key'] = api_key
+        mw.col.conf[BEE]['goalname'] = goalname
+        #mw.col.conf[BEE]['enabled'] = enabled
+        #mw.col.conf[BEE]['shutdown'] = syncAtShutdown
+        #mw.col.conf[BEE]['ankiweb'] = syncAfterAnkiWeb
         self.close()
 
 dialog = None
