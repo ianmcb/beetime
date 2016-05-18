@@ -17,6 +17,7 @@ import httplib, urllib
 import json
 
 def getConfig():
+    global USER, TOKEN, SLUG, SEND_DATA
     USER = mw.col.conf[BEE]['username']
     TOKEN = mw.col.conf[BEE]['api_key']
     SLUG = mw.col.conf[BEE]['goalname']
@@ -62,7 +63,7 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     reviewTime /= 60.0 * 60.0
 
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
-    showInfo("Reporting: %s, %s, %s" % (USER, TOKEN, SLUG))
+    #showInfo("Reporting: %s, %s, %s" % (USER, TOKEN, SLUG))
     reportTime(col, reviewTime, comment, reportTimestamp, SLUG)
 
 def reportTime(col, time, comment, timestamp, slug):
@@ -75,7 +76,9 @@ def reportTime(col, time, comment, timestamp, slug):
         "comment": comment,
     }
 
-    datapointId = checkDatapoints(date, time, slug)
+    datapointId = None
+    if mw.col.conf[BEE]['agg'] is 0:
+        datapointId = checkDatapoints(date, time, slug)
 
     if SEND_DATA:
         sendApi(USER, TOKEN, slug, data, datapointId)
@@ -123,25 +126,25 @@ def apiCall(requestType, user, token, slug, data, did):
     return responseBody
 
 def beetimeHook():
-    checkCollection(mw.col)
+    if mw.col.conf[BEE]['shutdown']:
+        checkCollection(mw.col)
 
-#addHook("unloadProfile", beetimeHook)
+addHook("unloadProfile", beetimeHook)
 
-def testFunction():
+def beetimeManual():
     checkCollection(mw.col)
 
 # create a menu item to manually sync with beeminder
 sync_with_beeminder = QAction("Sync with Beeminder", mw)
-mw.connect(sync_with_beeminder, SIGNAL("triggered()"), testFunction)
+mw.connect(sync_with_beeminder, SIGNAL("triggered()"), beetimeManual)
 mw.form.menuTools.addAction(sync_with_beeminder)
 
 # create an options window
 from beeminder_settings import Ui_BeeminderSettings
 
 from aqt.qt import *
-#import  aqt
+#import aqt
 
-beeConf = None
 class BeeminderSettings(QDialog):
     def __init__(self):
         QDialog.__init__(self)
@@ -153,7 +156,6 @@ class BeeminderSettings(QDialog):
         self.connect(self.ui.buttonBox, SIGNAL("rejected()"), self.onReject)
         self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)
 
-
         beeConfKeys = ["username",
                 "goalname",
                 "api_key",
@@ -163,24 +165,27 @@ class BeeminderSettings(QDialog):
                 "shutdown",
                 "ankiweb"]
 
-        if not BEE in mw.col.conf:
-            showInfo("Populating Beeminder %s conf variable" % BEE)
-            mw.col.conf[BEE] = {}
+        if not BEE in self.mw.col.conf:
+            #showInfo("Populating Beeminder %s conf variable" % BEE)
+            self.mw.col.conf[BEE] = {}
             for key in beeConfKeys:
-                mw.col.conf[BEE][key] = None
+                self.mw.col.conf[BEE][key] = None
             for key in beeConfBools:
-                mw.col.conf[BEE][key] = False
-            mw.col.conf[BEE]['enabled'] = True
+                self.mw.col.conf[BEE][key] = False
+            self.mw.col.conf[BEE]['enabled'] = True
+            self.mw.col.conf[BEE]['agg'] = 0
 
     def display(self, parent):
-        self.ui.username.setText(mw.col.conf[BEE]['username'])
-        self.ui.goalname.setText(mw.col.conf[BEE]['goalname'])
-        self.ui.api_key.setText(mw.col.conf[BEE]['api_key'])
-        #self.ui.goal_units.setText(mw.col.conf[BEE]['units'])
+        self.ui.username.setText(self.mw.col.conf[BEE]['username'])
+        self.ui.goalname.setText(self.mw.col.conf[BEE]['goalname'])
+        self.ui.api_key.setText(self.mw.col.conf[BEE]['api_key'])
+        #self.ui.goal_units.setText(self.mw.col.conf[BEE]['units'])
 
-        self.ui.beeminder_groupBox.setChecked(mw.col.conf[BEE]['enabled'])
-        self.ui.sync_at_shutdown.setChecked(mw.col.conf[BEE]['shutdown'])
-        self.ui.sync_after_ankiweb.setChecked(mw.col.conf[BEE]['ankiweb'])
+        self.ui.beeminder_groupBox.setChecked(self.mw.col.conf[BEE]['enabled'])
+        self.ui.sync_at_shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
+        self.ui.sync_after_ankiweb.setChecked(self.mw.col.conf[BEE]['ankiweb'])
+
+        self.ui.aggregation.setCurrentIndex(self.mw.col.conf[BEE]['agg'])
 
         self.parent = parent
         self.show()
@@ -197,13 +202,16 @@ class BeeminderSettings(QDialog):
         username = self.ui.username.text()
         api_key = self.ui.api_key.text()
         goalname = self.ui.goalname.text()
-        showInfo("Goalname is %s. API key is %s.!" % (goalname, api_key))
-        mw.col.conf[BEE]['username'] = username
-        mw.col.conf[BEE]['api_key'] = api_key
-        mw.col.conf[BEE]['goalname'] = goalname
-        #mw.col.conf[BEE]['enabled'] = enabled
-        #mw.col.conf[BEE]['shutdown'] = syncAtShutdown
-        #mw.col.conf[BEE]['ankiweb'] = syncAfterAnkiWeb
+        syncAtShutdown = self.ui.sync_at_shutdown.checkState()
+        #showInfo("Goalname is %s. API key is %s.!" % (goalname, api_key))
+        self.mw.col.conf[BEE]['username'] = username
+        self.mw.col.conf[BEE]['api_key'] = api_key
+        self.mw.col.conf[BEE]['goalname'] = goalname
+        #self.mw.col.conf[BEE]['enabled'] = enabled
+        self.mw.col.conf[BEE]['shutdown'] = syncAtShutdown
+        #self.mw.col.conf[BEE]['ankiweb'] = syncAfterAnkiWeb
+        self.mw.col.conf[BEE]['agg'] = self.ui.aggregation.currentIndex()
+        self.mw.col.setMod()
         self.close()
 
 dialog = None
