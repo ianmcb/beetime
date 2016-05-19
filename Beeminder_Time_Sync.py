@@ -134,6 +134,7 @@ def apiCall(requestType, user, token, slug, data, did):
     return responseBody
 
 def beetimeHook():
+    BeeminderSettings()
     if mw.col.conf[BEE]['shutdown']:
         checkCollection(mw.col)
 
