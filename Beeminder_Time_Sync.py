@@ -148,7 +148,7 @@ class BeeminderSettings(QDialog):
                 "username": "",
                 "goalname": "",
                 "api": "",
-                "enabled": False,
+                "enabled": True,
                 "shutdown": False,
                 "ankiweb": False,
                 "premium": False,
