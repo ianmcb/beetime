@@ -60,7 +60,7 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
         reviewTime /= 60.0
 
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
-    reportTime(col, reviewTime, comment, reportTimestamp, mw.col.conf[BEE]['goalname'])
+    reportTime(col, reviewTime, comment, reportTimestamp, mw.col.conf[BEE]['slug'])
     mw.progress.finish()
 
 def reportTime(col, time, comment, timestamp, slug):
@@ -75,7 +75,7 @@ def reportTime(col, time, comment, timestamp, slug):
 
     # get config variables
     user = mw.col.conf[BEE]['username']
-    token = mw.col.conf[BEE]['api']
+    token = mw.col.conf[BEE]['token']
 
     # optionally get a datapoint ID if we want to overwrite an existing datapoint
     datapointId = None
@@ -146,8 +146,8 @@ class BeeminderSettings(QDialog):
 
         defaultConfig = {
                 "username": "",
-                "goalname": "",
-                "api": "",
+                "slug": "",
+                "token": "",
                 "enabled": True,
                 "shutdown": False,
                 "ankiweb": False,
@@ -161,8 +161,8 @@ class BeeminderSettings(QDialog):
 
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])
-        self.ui.goalname.setText(self.mw.col.conf[BEE]['goalname'])
-        self.ui.api.setText(self.mw.col.conf[BEE]['api'])
+        self.ui.slug.setText(self.mw.col.conf[BEE]['slug'])
+        self.ui.token.setText(self.mw.col.conf[BEE]['token'])
 
         self.ui.enabled.setChecked(self.mw.col.conf[BEE]['enabled'])
         self.ui.shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
@@ -183,8 +183,8 @@ class BeeminderSettings(QDialog):
         overwrite = not premium or (premium and self.ui.agg.currentIndex() is 0)
 
         self.mw.col.conf[BEE]['username'] = self.ui.username.text()
-        self.mw.col.conf[BEE]['api'] = self.ui.api.text()
-        self.mw.col.conf[BEE]['goalname'] = self.ui.goalname.text()
+        self.mw.col.conf[BEE]['token'] = self.ui.token.text()
+        self.mw.col.conf[BEE]['slug'] = self.ui.slug.text()
 
         self.mw.col.conf[BEE]['enabled'] = self.ui.enabled.isChecked()
         self.mw.col.conf[BEE]['shutdown'] = self.ui.shutdown.isChecked()
