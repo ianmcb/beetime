@@ -228,7 +228,6 @@ mw.form.menuTools.addAction(sync_with_beeminder)
 
 # sync at shutdown boilerplate
 def beetimeHook():
-    BeeminderSettings()
     if mw.col.conf[BEE]['shutdown']:
         checkCollection(mw.col)
 
