@@ -8,7 +8,8 @@ SEND_DATA = True
 from anki.hooks import addHook
 from anki.lang import _, ngettext
 from anki.utils import fmtTimeSpan
-from aqt import mw
+
+from aqt import mw, progress
 from aqt.utils import showInfo
 from aqt.qt import QAction, SIGNAL
 
@@ -44,6 +45,9 @@ def checkCollection(col=None):
     if col is None:
         return
 
+    mw.progress.start(immediate=True)
+    mw.progress.update("Syncing with Beeminder...")
+
     # get configuration
     getConfig()
 
@@ -65,6 +69,7 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
     #showInfo("Reporting: %s, %s, %s" % (USER, TOKEN, SLUG))
     reportTime(col, reviewTime, comment, reportTimestamp, SLUG)
+    mw.progress.finish()
 
 def reportTime(col, time, comment, timestamp, slug):
     """Prepare the API call to beeminder."""
