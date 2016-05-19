@@ -52,7 +52,7 @@
        </property>
        <layout class="QGridLayout" name="beeminder_gridLayout">
         <item row="2" column="1">
-         <widget class="QLabel" name="goalname_label">
+         <widget class="QLabel" name="slug_label">
           <property name="text">
            <string>Goalname</string>
           </property>
@@ -78,10 +78,10 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLineEdit" name="api"/>
+         <widget class="QLineEdit" name="token"/>
         </item>
         <item row="2" column="0">
-         <widget class="QLineEdit" name="goalname"/>
+         <widget class="QLineEdit" name="slug"/>
         </item>
         <item row="3" column="1">
          <widget class="QLabel" name="units_label">
@@ -167,7 +167,7 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLabel" name="api_label">
+         <widget class="QLabel" name="token_label">
           <property name="text">
            <string>API key</string>
           </property>
@@ -184,8 +184,8 @@
  <tabstops>
   <tabstop>enabled</tabstop>
   <tabstop>username</tabstop>
-  <tabstop>api</tabstop>
-  <tabstop>goalname</tabstop>
+  <tabstop>token</tabstop>
+  <tabstop>slug</tabstop>
   <tabstop>units</tabstop>
   <tabstop>shutdown</tabstop>
   <tabstop>ankiweb</tabstop>
