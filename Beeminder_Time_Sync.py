@@ -17,18 +17,11 @@ import datetime
 import httplib, urllib
 import json
 
-def getConfig():
-    global USER, TOKEN, SLUG, SEND_DATA
-    USER = mw.col.conf[BEE]['username']
-    TOKEN = mw.col.conf[BEE]['api']
-    SLUG = mw.col.conf[BEE]['goalname']
-    SEND_DATA = mw.col.conf[BEE]['enabled']
-
-def checkDatapoints(date, time, slug):
+def checkDatapoints(user, token, date, time, slug):
     """Check if there's already a datapoint for the current day and
     return its ID if present, None if not.
     """
-    datapoints = getApi(USER, TOKEN, slug)
+    datapoints = getApi(user, token, slug)
     datapoints = json.loads(datapoints)
     dayStamp = datetime.date.fromtimestamp(float(date)).strftime('%Y%m%d')
     if datapoints[0]['daystamp'] == dayStamp:
@@ -47,9 +40,6 @@ def checkCollection(col=None):
 
     mw.progress.start(immediate=True)
     mw.progress.update("Syncing with Beeminder...")
-
-    # get configuration
-    getConfig()
 
     # time spent reviewing
     numberOfCards, reviewTime = col.db.first("""
@@ -70,8 +60,7 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
         reviewTime /= 60.0
 
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
-    #showInfo("Reporting: %s, %s, %s" % (USER, TOKEN, SLUG))
-    reportTime(col, reviewTime, comment, reportTimestamp, SLUG)
+    reportTime(col, reviewTime, comment, reportTimestamp, mw.col.conf[BEE]['goalname'])
     mw.progress.finish()
 
 def reportTime(col, time, comment, timestamp, slug):
@@ -84,12 +73,17 @@ def reportTime(col, time, comment, timestamp, slug):
         "comment": comment,
     }
 
+    # get config variables
+    user = mw.col.conf[BEE]['username']
+    token = mw.col.conf[BEE]['api']
+
+    # optionally get a datapoint ID if we want to overwrite an existing datapoint
     datapointId = None
     if mw.col.conf[BEE]['overwrite']:
-        datapointId = checkDatapoints(date, time, slug)
+        datapointId = checkDatapoints(user, token, date, time, slug)
 
-    if SEND_DATA:
-        sendApi(USER, TOKEN, slug, data, datapointId)
+    if mw.col.conf[BEE]['enabled'] and SEND_DATA:
+        sendApi(user, token, slug, data, datapointId)
     else:
         print "would send:"
         print data
