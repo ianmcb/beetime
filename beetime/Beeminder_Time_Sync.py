@@ -3,19 +3,20 @@
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 # Version: v1.2
 
+BEE = 'bee_conf' # name of key in anki configuration dict
+
+from Beeminder_Settings import BeeminderSettings
+
 from anki.hooks import addHook
 from anki.lang import _, ngettext
 from anki.utils import fmtTimeSpan
 
 from aqt import mw, progress
-from aqt.utils import showInfo
 from aqt.qt import QAction, SIGNAL
 
 import datetime
 import httplib, urllib
 import json
-
-BEE = 'bee_conf' # name of key in anki configuration dict
 
 def checkDatapoints(user, token, date, time, slug):
     """Check if there's already a datapoint for the current day and
@@ -127,78 +128,6 @@ def apiCall(requestType, user, token, slug, data, did):
     responseBody = response.read()
     conn.close()
     return responseBody
-
-# TODO: factor this class out to a separate file
-from beeminder_settings import Ui_BeeminderSettings
-
-from aqt.qt import *
-
-class BeeminderSettings(QDialog):
-    """Create a settings menu."""
-    def __init__(self):
-        QDialog.__init__(self)
-
-        self.mw = mw
-        self.ui = Ui_BeeminderSettings()
-        self.ui.setupUi(self)
-
-        self.connect(self.ui.buttonBox, SIGNAL("rejected()"), self.onReject)
-        self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)
-
-        defaultConfig = {
-                "username": "",
-                "slug": "",
-                "token": "",
-                "enabled": True,
-                "shutdown": False,
-                "ankiweb": False,
-                "premium": False,
-                "overwrite": True,
-                "units": 0,
-                "agg": 0}
-
-        if not BEE in self.mw.col.conf:
-            self.mw.col.conf[BEE] = defaultConfig
-
-    def display(self, parent):
-        self.ui.username.setText(self.mw.col.conf[BEE]['username'])
-        self.ui.slug.setText(self.mw.col.conf[BEE]['slug'])
-        self.ui.token.setText(self.mw.col.conf[BEE]['token'])
-
-        self.ui.enabled.setChecked(self.mw.col.conf[BEE]['enabled'])
-        self.ui.shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
-        self.ui.ankiweb.setChecked(self.mw.col.conf[BEE]['ankiweb'])
-        self.ui.premium.setChecked(self.mw.col.conf[BEE]['premium'])
-
-        self.ui.agg.setCurrentIndex(self.mw.col.conf[BEE]['agg'])
-        self.ui.units.setCurrentIndex(self.mw.col.conf[BEE]['units'])
-
-        self.parent = parent
-        self.show()
-
-    def onReject(self):
-        self.close()
-
-    def onAccept(self):
-        premium = self.ui.premium.isChecked()
-        overwrite = not premium or (premium and self.ui.agg.currentIndex() is 0)
-
-        self.mw.col.conf[BEE]['username'] = self.ui.username.text()
-        self.mw.col.conf[BEE]['token'] = self.ui.token.text()
-        self.mw.col.conf[BEE]['slug'] = self.ui.slug.text()
-
-        self.mw.col.conf[BEE]['enabled'] = self.ui.enabled.isChecked()
-        self.mw.col.conf[BEE]['shutdown'] = self.ui.shutdown.isChecked()
-        self.mw.col.conf[BEE]['ankiweb'] = self.ui.ankiweb.isChecked()
-        self.mw.col.conf[BEE]['premium'] = premium
-
-        self.mw.col.conf[BEE]['agg'] = self.ui.agg.currentIndex()
-        self.mw.col.conf[BEE]['units'] = self.ui.units.currentIndex()
-
-        self.mw.col.conf[BEE]['overwrite'] = overwrite
-
-        self.mw.col.setMod()
-        self.close()
 
 # settings menu boilerplate
 # TODO: less dialog? :-)
