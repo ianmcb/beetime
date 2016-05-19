@@ -63,8 +63,11 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     comment = _("studied %(a)s in %(b)s") % dict(a=msgp1,
             b=fmtTimeSpan(reviewTime, unit=1))
 
-    # convert seconds to hours
-    reviewTime /= 60.0 * 60.0
+    # convert seconds to hours or minutes
+    if mw.col.conf[BEE]['units'] is 0:
+        reviewTime /= 60.0 * 60.0
+    elif mw.col.conf[BEE]['units'] is 1:
+        reviewTime /= 60.0
 
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
     #showInfo("Reporting: %s, %s, %s" % (USER, TOKEN, SLUG))
@@ -163,12 +166,13 @@ class BeeminderSettings(QDialog):
 
         beeConfKeys = ["username",
                 "goalname",
-                "api_key",
-                "units"]
+                "api_key"]
 
         beeConfBools = ["enabled",
                 "shutdown",
                 "ankiweb"]
+
+        beeConfInd = ["units"]
 
         if not BEE in self.mw.col.conf:
             #showInfo("Populating Beeminder %s conf variable" % BEE)
@@ -179,18 +183,20 @@ class BeeminderSettings(QDialog):
                 self.mw.col.conf[BEE][key] = False
             self.mw.col.conf[BEE]['enabled'] = True
             self.mw.col.conf[BEE]['agg'] = 0
+            for key in beeConfInd:
+                self.mw.col.conf[BEE][key] = 0
 
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])
         self.ui.goalname.setText(self.mw.col.conf[BEE]['goalname'])
         self.ui.api_key.setText(self.mw.col.conf[BEE]['api_key'])
-        #self.ui.goal_units.setText(self.mw.col.conf[BEE]['units'])
 
         self.ui.beeminder_groupBox.setChecked(self.mw.col.conf[BEE]['enabled'])
         self.ui.sync_at_shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
         self.ui.sync_after_ankiweb.setChecked(self.mw.col.conf[BEE]['ankiweb'])
 
         self.ui.aggregation.setCurrentIndex(self.mw.col.conf[BEE]['agg'])
+        self.ui.goal_units.setCurrentIndex(self.mw.col.conf[BEE]['units'])
 
         self.parent = parent
         self.show()
@@ -216,6 +222,7 @@ class BeeminderSettings(QDialog):
         self.mw.col.conf[BEE]['shutdown'] = syncAtShutdown
         #self.mw.col.conf[BEE]['ankiweb'] = syncAfterAnkiWeb
         self.mw.col.conf[BEE]['agg'] = self.ui.aggregation.currentIndex()
+        self.mw.col.conf[BEE]['units'] = self.ui.goal_units.currentIndex()
         self.mw.col.setMod()
         self.close()
 
