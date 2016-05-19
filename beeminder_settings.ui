@@ -31,7 +31,7 @@
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QGroupBox" name="beeminder_groupBox">
+     <widget class="QGroupBox" name="enabled">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -59,7 +59,7 @@
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QComboBox" name="goal_units">
+         <widget class="QComboBox" name="units">
           <item>
            <property name="text">
             <string>hours</string>
@@ -78,7 +78,7 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLineEdit" name="api_key"/>
+         <widget class="QLineEdit" name="api"/>
         </item>
         <item row="2" column="0">
          <widget class="QLineEdit" name="goalname"/>
@@ -91,7 +91,7 @@
          </widget>
         </item>
         <item row="4" column="0">
-         <widget class="QCheckBox" name="sync_at_shutdown">
+         <widget class="QCheckBox" name="shutdown">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -104,14 +104,14 @@
          </widget>
         </item>
         <item row="5" column="0">
-         <widget class="QCheckBox" name="sync_after_ankiweb">
+         <widget class="QCheckBox" name="ankiweb">
           <property name="text">
            <string>Sync after synchronizing with AnkiWeb</string>
           </property>
          </widget>
         </item>
         <item row="6" column="0">
-         <widget class="QGroupBox" name="premium_groupBox">
+         <widget class="QGroupBox" name="premium">
           <property name="title">
            <string>Use premium features</string>
           </property>
@@ -132,7 +132,7 @@
            </property>
            <layout class="QGridLayout" name="premium_gridLayout">
             <item row="1" column="0">
-             <widget class="QComboBox" name="aggregation">
+             <widget class="QComboBox" name="agg">
               <item>
                <property name="text">
                 <string extracomment="use with the default sum aggregation">overwrite the datapoint (use with aggday &quot;sum&quot;)</string>
@@ -167,7 +167,7 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLabel" name="api_key_label">
+         <widget class="QLabel" name="api_label">
           <property name="text">
            <string>API key</string>
           </property>
@@ -182,15 +182,15 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>beeminder_groupBox</tabstop>
+  <tabstop>enabled</tabstop>
   <tabstop>username</tabstop>
-  <tabstop>api_key</tabstop>
+  <tabstop>api</tabstop>
   <tabstop>goalname</tabstop>
-  <tabstop>goal_units</tabstop>
-  <tabstop>sync_at_shutdown</tabstop>
-  <tabstop>sync_after_ankiweb</tabstop>
-  <tabstop>premium_groupBox</tabstop>
-  <tabstop>aggregation</tabstop>
+  <tabstop>units</tabstop>
+  <tabstop>shutdown</tabstop>
+  <tabstop>ankiweb</tabstop>
+  <tabstop>premium</tabstop>
+  <tabstop>agg</tabstop>
  </tabstops>
  <resources/>
  <connections/>
