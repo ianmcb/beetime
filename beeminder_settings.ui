@@ -70,6 +70,11 @@
             <string>minutes</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>seconds</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item row="1" column="0">
@@ -152,12 +157,19 @@
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QLineEdit" name="lineEdit"/>
+         <widget class="QLineEdit" name="username"/>
         </item>
         <item row="0" column="1">
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="username_label">
           <property name="text">
            <string>Username</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="api_key_label">
+          <property name="text">
+           <string>API key</string>
           </property>
          </widget>
         </item>
@@ -169,6 +181,17 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>beeminder_groupBox</tabstop>
+  <tabstop>username</tabstop>
+  <tabstop>api_key</tabstop>
+  <tabstop>goalname</tabstop>
+  <tabstop>goal_units</tabstop>
+  <tabstop>sync_at_shutdown</tabstop>
+  <tabstop>sync_after_ankiweb</tabstop>
+  <tabstop>premium_groupBox</tabstop>
+  <tabstop>aggregation</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
