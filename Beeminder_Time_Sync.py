@@ -179,10 +179,10 @@ class BeeminderSettings(QDialog):
         self.ui.goalname.setText(self.mw.col.conf[BEE]['goalname'])
         self.ui.api.setText(self.mw.col.conf[BEE]['api'])
 
-        self.ui.beeminder_groupBox.setChecked(self.mw.col.conf[BEE]['enabled'])
+        self.ui.enabled.setChecked(self.mw.col.conf[BEE]['enabled'])
         self.ui.sync_at_shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
         self.ui.sync_after_ankiweb.setChecked(self.mw.col.conf[BEE]['ankiweb'])
-        self.ui.premium_groupBox.setChecked(self.mw.col.conf[BEE]['premium'])
+        self.ui.premium.setChecked(self.mw.col.conf[BEE]['premium'])
 
         self.ui.aggregation.setCurrentIndex(self.mw.col.conf[BEE]['agg'])
         self.ui.goal_units.setCurrentIndex(self.mw.col.conf[BEE]['units'])
@@ -194,14 +194,14 @@ class BeeminderSettings(QDialog):
         self.close()
 
     def onAccept(self):
-        premium = self.ui.premium_groupBox.isChecked()
+        premium = self.ui.premium.isChecked()
         overwrite = not premium or (premium and self.ui.aggregation.currentIndex() is 0)
 
         self.mw.col.conf[BEE]['username'] = self.ui.username.text()
         self.mw.col.conf[BEE]['api'] = self.ui.api.text()
         self.mw.col.conf[BEE]['goalname'] = self.ui.goalname.text()
 
-        self.mw.col.conf[BEE]['enabled'] = self.ui.beeminder_groupBox.isChecked()
+        self.mw.col.conf[BEE]['enabled'] = self.ui.enabled.isChecked()
         self.mw.col.conf[BEE]['shutdown'] = self.ui.sync_at_shutdown.isChecked()
         self.mw.col.conf[BEE]['ankiweb'] = self.ui.sync_after_ankiweb.isChecked()
         self.mw.col.conf[BEE]['premium'] = premium
