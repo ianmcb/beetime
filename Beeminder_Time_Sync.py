@@ -133,20 +133,6 @@ def apiCall(requestType, user, token, slug, data, did):
     conn.close()
     return responseBody
 
-def beetimeHook():
-    BeeminderSettings()
-    if mw.col.conf[BEE]['shutdown']:
-        checkCollection(mw.col)
-
-addHook("unloadProfile", beetimeHook)
-
-def beetimeManual():
-    checkCollection(mw.col)
-
-# create a menu item to manually sync with beeminder
-sync_with_beeminder = QAction("Sync with Beeminder", mw)
-mw.connect(sync_with_beeminder, SIGNAL("triggered()"), beetimeManual)
-mw.form.menuTools.addAction(sync_with_beeminder)
 
 # create an options window
 from beeminder_settings import Ui_BeeminderSettings
@@ -228,6 +214,7 @@ class BeeminderSettings(QDialog):
         self.mw.col.setMod()
         self.close()
 
+# settings menu boilerplate
 dialog = None
 def openBeeminderSettings(parent):
     global dialog
@@ -238,3 +225,19 @@ def openBeeminderSettings(parent):
 open_bm_settings = QAction("Setup sync with Beeminder...", mw)
 mw.connect(open_bm_settings, SIGNAL("triggered()"), lambda p=mw: openBeeminderSettings(p))
 mw.form.menuTools.addAction(open_bm_settings)
+
+# manual sync boilerplate
+def beetimeManual():
+    checkCollection(mw.col)
+
+sync_with_beeminder = QAction("Sync with Beeminder", mw)
+mw.connect(sync_with_beeminder, SIGNAL("triggered()"), beetimeManual)
+mw.form.menuTools.addAction(sync_with_beeminder)
+
+# sync at shutdown boilerplate
+def beetimeHook():
+    BeeminderSettings()
+    if mw.col.conf[BEE]['shutdown']:
+        checkCollection(mw.col)
+
+addHook("unloadProfile", beetimeHook)
