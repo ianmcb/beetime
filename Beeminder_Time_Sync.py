@@ -20,7 +20,7 @@ import json
 def getConfig():
     global USER, TOKEN, SLUG, SEND_DATA
     USER = mw.col.conf[BEE]['username']
-    TOKEN = mw.col.conf[BEE]['api_key']
+    TOKEN = mw.col.conf[BEE]['api']
     SLUG = mw.col.conf[BEE]['goalname']
     SEND_DATA = mw.col.conf[BEE]['enabled']
 
@@ -153,7 +153,7 @@ class BeeminderSettings(QDialog):
 
         beeConfKeys = ["username",
                 "goalname",
-                "api_key"]
+                "api"]
 
         beeConfBools = ["enabled",
                 "shutdown",
@@ -177,7 +177,7 @@ class BeeminderSettings(QDialog):
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])
         self.ui.goalname.setText(self.mw.col.conf[BEE]['goalname'])
-        self.ui.api_key.setText(self.mw.col.conf[BEE]['api_key'])
+        self.ui.api.setText(self.mw.col.conf[BEE]['api'])
 
         self.ui.beeminder_groupBox.setChecked(self.mw.col.conf[BEE]['enabled'])
         self.ui.sync_at_shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
@@ -198,7 +198,7 @@ class BeeminderSettings(QDialog):
         overwrite = not premium or (premium and self.ui.aggregation.currentIndex() is 0)
 
         self.mw.col.conf[BEE]['username'] = self.ui.username.text()
-        self.mw.col.conf[BEE]['api_key'] = self.ui.api_key.text()
+        self.mw.col.conf[BEE]['api'] = self.ui.api.text()
         self.mw.col.conf[BEE]['goalname'] = self.ui.goalname.text()
 
         self.mw.col.conf[BEE]['enabled'] = self.ui.beeminder_groupBox.isChecked()
