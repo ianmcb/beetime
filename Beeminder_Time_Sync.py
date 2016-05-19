@@ -180,12 +180,12 @@ class BeeminderSettings(QDialog):
         self.ui.api.setText(self.mw.col.conf[BEE]['api'])
 
         self.ui.enabled.setChecked(self.mw.col.conf[BEE]['enabled'])
-        self.ui.sync_at_shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
-        self.ui.sync_after_ankiweb.setChecked(self.mw.col.conf[BEE]['ankiweb'])
+        self.ui.shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
+        self.ui.ankiweb.setChecked(self.mw.col.conf[BEE]['ankiweb'])
         self.ui.premium.setChecked(self.mw.col.conf[BEE]['premium'])
 
-        self.ui.aggregation.setCurrentIndex(self.mw.col.conf[BEE]['agg'])
-        self.ui.goal_units.setCurrentIndex(self.mw.col.conf[BEE]['units'])
+        self.ui.agg.setCurrentIndex(self.mw.col.conf[BEE]['agg'])
+        self.ui.units.setCurrentIndex(self.mw.col.conf[BEE]['units'])
 
         self.parent = parent
         self.show()
@@ -195,19 +195,19 @@ class BeeminderSettings(QDialog):
 
     def onAccept(self):
         premium = self.ui.premium.isChecked()
-        overwrite = not premium or (premium and self.ui.aggregation.currentIndex() is 0)
+        overwrite = not premium or (premium and self.ui.agg.currentIndex() is 0)
 
         self.mw.col.conf[BEE]['username'] = self.ui.username.text()
         self.mw.col.conf[BEE]['api'] = self.ui.api.text()
         self.mw.col.conf[BEE]['goalname'] = self.ui.goalname.text()
 
         self.mw.col.conf[BEE]['enabled'] = self.ui.enabled.isChecked()
-        self.mw.col.conf[BEE]['shutdown'] = self.ui.sync_at_shutdown.isChecked()
-        self.mw.col.conf[BEE]['ankiweb'] = self.ui.sync_after_ankiweb.isChecked()
+        self.mw.col.conf[BEE]['shutdown'] = self.ui.shutdown.isChecked()
+        self.mw.col.conf[BEE]['ankiweb'] = self.ui.ankiweb.isChecked()
         self.mw.col.conf[BEE]['premium'] = premium
 
-        self.mw.col.conf[BEE]['agg'] = self.ui.aggregation.currentIndex()
-        self.mw.col.conf[BEE]['units'] = self.ui.goal_units.currentIndex()
+        self.mw.col.conf[BEE]['agg'] = self.ui.agg.currentIndex()
+        self.mw.col.conf[BEE]['units'] = self.ui.units.currentIndex()
 
         self.mw.col.conf[BEE]['overwrite'] = overwrite
 
