@@ -151,28 +151,20 @@ class BeeminderSettings(QDialog):
         self.connect(self.ui.buttonBox, SIGNAL("rejected()"), self.onReject)
         self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)
 
-        beeConfKeys = ["username",
-                "goalname",
-                "api"]
-
-        beeConfBools = ["enabled",
-                "shutdown",
-                "ankiweb",
-                "premium",
-                "overwrite"]
-
-        beeConfInd = ["units",
-                "agg"]
+        defaultConfig = {
+                "username": "",
+                "goalname": "",
+                "api": "",
+                "enabled": False,
+                "shutdown": False,
+                "ankiweb": False,
+                "premium": False,
+                "overwrite": True,
+                "units": 0,
+                "agg": 0}
 
         if not BEE in self.mw.col.conf:
-            #showInfo("Populating Beeminder %s conf variable" % BEE)
-            self.mw.col.conf[BEE] = {}
-            for key in beeConfKeys:
-                self.mw.col.conf[BEE][key] = None
-            for key in beeConfBools:
-                self.mw.col.conf[BEE][key] = False
-            for key in beeConfInd:
-                self.mw.col.conf[BEE][key] = 0
+            self.mw.col.conf[BEE] = defaultConfig
 
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])
