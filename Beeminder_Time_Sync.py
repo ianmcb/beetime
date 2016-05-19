@@ -1,9 +1,7 @@
 # This add-on sends your time spent reviewing to Beeminder.
-# All code is public domain.
-# v1.0.4
-
-BEE = 'bee_conf'
-SEND_DATA = True
+# Copyright: Ian McB <yanmcbe@gmail.com>
+# License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+# Version: v1.2
 
 from anki.hooks import addHook
 from anki.lang import _, ngettext
@@ -16,6 +14,8 @@ from aqt.qt import QAction, SIGNAL
 import datetime
 import httplib, urllib
 import json
+
+BEE = 'bee_conf' # name of key in anki configuration dict
 
 def checkDatapoints(user, token, date, time, slug):
     """Check if there's already a datapoint for the current day and
@@ -49,18 +49,21 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     numberOfCards = numberOfCards or 0
     reviewTime = reviewTime or 0
 
+    # 2 lines ripped from the anki source
     msgp1 = ngettext("%d card", "%d cards", numberOfCards) % numberOfCards
     comment = _("studied %(a)s in %(b)s") % dict(a=msgp1,
             b=fmtTimeSpan(reviewTime, unit=1))
 
-    # convert seconds to hours or minutes
+    # convert seconds to hours (units is 0) or minutes (units is 1)
+    # keep seconds if units is 2
     if mw.col.conf[BEE]['units'] is 0:
         reviewTime /= 60.0 * 60.0
     elif mw.col.conf[BEE]['units'] is 1:
         reviewTime /= 60.0
 
+    slug = mw.col.conf[BEE]['slug']
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
-    reportTime(col, reviewTime, comment, reportTimestamp, mw.col.conf[BEE]['slug'])
+    reportTime(col, reviewTime, comment, reportTimestamp, slug)
     mw.progress.finish()
 
 def reportTime(col, time, comment, timestamp, slug):
@@ -73,20 +76,17 @@ def reportTime(col, time, comment, timestamp, slug):
         "comment": comment,
     }
 
-    # get config variables
     user = mw.col.conf[BEE]['username']
     token = mw.col.conf[BEE]['token']
 
-    # optionally get a datapoint ID if we want to overwrite an existing datapoint
+    # optionally get a datapoint ID if we want to overwrite an existing
+    # datapoint
     datapointId = None
     if mw.col.conf[BEE]['overwrite']:
         datapointId = checkDatapoints(user, token, date, time, slug)
 
-    if mw.col.conf[BEE]['enabled'] and SEND_DATA:
+    if mw.col.conf[BEE]['enabled']:
         sendApi(user, token, slug, data, datapointId)
-    else:
-        print "would send:"
-        print data
 
 def getApi(user, token, slug):
     """Get the datapoints for a given goal from Beeminder."""
@@ -95,11 +95,12 @@ def getApi(user, token, slug):
 def sendApi(user, token, slug, data, did=None):
     """Send or update a datapoint to a given Beeminder goal. If a
     datapoint ID (did) is given, the existing datapoint is updated.
-    Otherwise a new datapoint is created.
+    Otherwise a new datapoint is created. Nothing is returned.
     """
     apiCall("POST", user, token, slug, data, did)
 
 def apiCall(requestType, user, token, slug, data, did):
+    """Prepare an API request."""
     base = "www.beeminder.com"
     cmd = "datapoints"
     api = "/api/v1/users/%s/goals/%s/%s.json" % (user, slug, cmd)
@@ -127,13 +128,13 @@ def apiCall(requestType, user, token, slug, data, did):
     conn.close()
     return responseBody
 
-
-# create an options window
+# TODO: factor this class out to a separate file
 from beeminder_settings import Ui_BeeminderSettings
 
 from aqt.qt import *
 
 class BeeminderSettings(QDialog):
+    """Create a settings menu."""
     def __init__(self):
         QDialog.__init__(self)
 
@@ -200,6 +201,7 @@ class BeeminderSettings(QDialog):
         self.close()
 
 # settings menu boilerplate
+# TODO: less dialog? :-)
 dialog = None
 def openBeeminderSettings(parent):
     global dialog
@@ -207,11 +209,12 @@ def openBeeminderSettings(parent):
         dialog = BeeminderSettings()
     dialog.display(parent)
 
-open_bm_settings = QAction("Setup sync with Beeminder...", mw)
+open_bm_settings = QAction("Setup Beeminder sync...", mw)
 mw.connect(open_bm_settings, SIGNAL("triggered()"), lambda p=mw: openBeeminderSettings(p))
 mw.form.menuTools.addAction(open_bm_settings)
 
 # manual sync boilerplate
+# TODO: replace beetimeManual with a lambda?
 def beetimeManual():
     checkCollection(mw.col)
 
