@@ -138,7 +138,6 @@ def apiCall(requestType, user, token, slug, data, did):
 from beeminder_settings import Ui_BeeminderSettings
 
 from aqt.qt import *
-#import aqt
 
 class BeeminderSettings(QDialog):
     def __init__(self):
