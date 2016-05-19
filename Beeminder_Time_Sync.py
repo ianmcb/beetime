@@ -85,7 +85,7 @@ def reportTime(col, time, comment, timestamp, slug):
     }
 
     datapointId = None
-    if mw.col.conf[BEE]['agg'] is 0:
+    if mw.col.conf[BEE]['overwrite']:
         datapointId = checkDatapoints(date, time, slug)
 
     if SEND_DATA:
@@ -170,9 +170,12 @@ class BeeminderSettings(QDialog):
 
         beeConfBools = ["enabled",
                 "shutdown",
-                "ankiweb"]
+                "ankiweb",
+                "premium",
+                "overwrite"]
 
-        beeConfInd = ["units"]
+        beeConfInd = ["units",
+                "agg"]
 
         if not BEE in self.mw.col.conf:
             #showInfo("Populating Beeminder %s conf variable" % BEE)
@@ -181,8 +184,6 @@ class BeeminderSettings(QDialog):
                 self.mw.col.conf[BEE][key] = None
             for key in beeConfBools:
                 self.mw.col.conf[BEE][key] = False
-            self.mw.col.conf[BEE]['enabled'] = True
-            self.mw.col.conf[BEE]['agg'] = 0
             for key in beeConfInd:
                 self.mw.col.conf[BEE][key] = 0
 
@@ -194,6 +195,7 @@ class BeeminderSettings(QDialog):
         self.ui.beeminder_groupBox.setChecked(self.mw.col.conf[BEE]['enabled'])
         self.ui.sync_at_shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
         self.ui.sync_after_ankiweb.setChecked(self.mw.col.conf[BEE]['ankiweb'])
+        self.ui.premium_groupBox.setChecked(self.mw.col.conf[BEE]['premium'])
 
         self.ui.aggregation.setCurrentIndex(self.mw.col.conf[BEE]['agg'])
         self.ui.goal_units.setCurrentIndex(self.mw.col.conf[BEE]['units'])
@@ -208,8 +210,8 @@ class BeeminderSettings(QDialog):
         enabled = self.ui.beeminder_groupBox.isChecked()
         syncAtShutdown = self.ui.sync_at_shutdown.isChecked()
         syncAfterAnkiWeb = self.ui.sync_after_ankiweb.isChecked()
-        # not yet implemented
-        overwrite = True # not self.ui.premium_groupBox.isChecked() or ...
+        premium = self.ui.premium_groupBox.isChecked()
+        overwrite = not premium or (premium and self.ui.aggregation.currentIndex() is 0)
         username = self.ui.username.text()
         api_key = self.ui.api_key.text()
         goalname = self.ui.goalname.text()
@@ -218,10 +220,12 @@ class BeeminderSettings(QDialog):
         self.mw.col.conf[BEE]['username'] = username
         self.mw.col.conf[BEE]['api_key'] = api_key
         self.mw.col.conf[BEE]['goalname'] = goalname
-        #self.mw.col.conf[BEE]['enabled'] = enabled
+        self.mw.col.conf[BEE]['enabled'] = enabled
         self.mw.col.conf[BEE]['shutdown'] = syncAtShutdown
         #self.mw.col.conf[BEE]['ankiweb'] = syncAfterAnkiWeb
+        self.mw.col.conf[BEE]['premium'] = self.ui.premium_groupBox.isChecked()
         self.mw.col.conf[BEE]['agg'] = self.ui.aggregation.currentIndex()
+        self.mw.col.conf[BEE]['overwrite'] = overwrite
         self.mw.col.conf[BEE]['units'] = self.ui.goal_units.currentIndex()
         self.mw.col.setMod()
         self.close()
