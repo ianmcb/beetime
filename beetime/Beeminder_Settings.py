@@ -19,15 +19,29 @@ class BeeminderSettings(QDialog):
 
         defaultConfig = {
                 "username": "",
-                "slug": "",
                 "token": "",
                 "enabled": True,
                 "shutdown": False,
                 "ankiweb": False,
-                "premium": False,
-                "overwrite": True,
-                "units": 0,
-                "agg": 0}
+                "time": {
+                    "enabled": False,
+                    "slug": "",
+                    "units": 0,
+                    "premium": False,
+                    "overwrite": True,
+                    "agg": 0},
+                "added": {
+                    "enabled": False,
+                    "slug": "",
+                    "premium": False,
+                    "overwrite": True,
+                    "agg": 0},
+                "reviewed": {
+                    "enabled": False,
+                    "slug": "",
+                    "premium": False,
+                    "overwrite": True,
+                    "agg": 0}}
 
         # for first-time users
         if not BEE in self.mw.col.conf:
@@ -78,8 +92,12 @@ class BeeminderSettings(QDialog):
         self.mw.col.conf[BEE]['agg'] = self.ui.agg.currentIndex()
         self.mw.col.conf[BEE]['units'] = self.ui.units.currentIndex()
 
-        self.mw.col.conf[BEE]['overwrite'] = overwrite
+        self.mw.col.conf[BEE]['overwrite'] = self.setOverwrite()
 
         self.mw.col.setMod()
         self.close()
 
+    def setOverwrite(self):
+        premium = self.ui.premium.isChecked()
+        agg = self.ui.agg.currentIndex()
+        return not premium or (premium and agg is 0)
