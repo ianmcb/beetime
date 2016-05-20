@@ -29,6 +29,8 @@ def checkDatapoints(user, token, date, time, slug):
 def checkCollection(col=None):
     """At time of shutdown (profile unloading), tally the time spent reviewing
     and send it to Beeminder.
+
+    Based on code by: muflax <mail@muflax.com>, 2012
     """
     col = col or mw.col
     if col is None:
@@ -63,7 +65,10 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     mw.progress.finish()
 
 def reportTime(col, time, comment, timestamp, slug):
-    """Prepare the API call to beeminder."""
+    """Prepare the API call to beeminder.
+
+    Based on code by: muflax <mail@muflax.com>, 2012
+    """
     # build data
     date = "%d" % timestamp
     data = {
@@ -96,7 +101,10 @@ def sendApi(user, token, slug, data, did=None):
     apiCall("POST", user, token, slug, data, did)
 
 def apiCall(requestType, user, token, slug, data, did):
-    """Prepare an API request."""
+    """Prepare an API request.
+
+    Based on code by: muflax <mail@muflax.com>, 2012
+    """
     base = "www.beeminder.com"
     cmd = "datapoints"
     api = "/api/v1/users/%s/goals/%s/%s.json" % (user, slug, cmd)
