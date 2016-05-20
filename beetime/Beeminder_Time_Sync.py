@@ -96,9 +96,10 @@ def getApi(user, token, slug):
 def sendApi(user, token, slug, data, did=None):
     """Send or update a datapoint to a given Beeminder goal. If a
     datapoint ID (did) is given, the existing datapoint is updated.
-    Otherwise a new datapoint is created. Nothing is returned.
+    Otherwise a new datapoint is created. Returns the datapoint ID
+    for use in caching.
     """
-    apiCall("POST", user, token, slug, data, did)
+    return apiCall("POST", user, token, slug, data, did)
 
 def apiCall(requestType, user, token, slug, data, did):
     """Prepare an API request.
