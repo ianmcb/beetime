@@ -26,12 +26,17 @@ def getDataPointId(timestamp):
     else:
         return None
 
-def checkCollection(col=None):
+def checkCollection(col=None, at=None):
     """At time of shutdown (profile unloading), tally the time spent reviewing
     and send it to Beeminder.
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
+    if at == 'shutdown' and not mw.col.conf[BEE]['shutdown'] or \
+            at == 'ankiweb' and not mw.col.conf[BEE]['ankiweb'] or\
+            not at == 'manual':
+        return
+
     col = col or mw.col
     if col is None:
         return
