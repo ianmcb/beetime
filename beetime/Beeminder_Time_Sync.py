@@ -74,16 +74,14 @@ def reportTime(col, time, comment, timestamp, slug):
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
-    # build data
-    date = "%d" % timestamp
-    data = {
-        "date": date,
-        "value": time,
-        "comment": comment,
-    }
-
     user = mw.col.conf[BEE]['username']
     token = mw.col.conf[BEE]['token']
+
+    data = {
+        "timestamp": timestamp,
+        "value": time,
+        "comment": comment,
+        "auth_token": token}
 
     datapointId = getDataPointId(timestamp)
 
@@ -123,10 +121,7 @@ def apiCall(requestType, user, token, slug, data, did):
     if requestType == "GET":
         params = urllib.urlencode({"auth_token": token})
     else:
-        params = urllib.urlencode({"timestamp": data["date"],
-                                   "value": data["value"],
-                                   "comment": data["comment"],
-                                   "auth_token": token})
+        params = urllib.urlencode(data)
 
     conn = httplib.HTTPSConnection(base)
     conn.request(requestType, api, params, headers)
