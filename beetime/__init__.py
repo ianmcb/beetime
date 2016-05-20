@@ -1,5 +1,5 @@
 from Beeminder_Settings import BeeminderSettings
-from Beeminder_Time_Sync import checkCollection
+from Beeminder_Time_Sync import syncDispatch
 
 from anki.hooks import addHook
 
@@ -22,9 +22,9 @@ mw.form.menuTools.addAction(openSettings)
 # manual sync menu item
 # ---------------------
 manualSync = QAction("Sync with Beeminder", mw)
-mw.connect(manualSync, SIGNAL("triggered()"), lambda: checkCollection(at='manual'))
+mw.connect(manualSync, SIGNAL("triggered()"), lambda: syncDispatch(at='manual'))
 mw.form.menuTools.addAction(manualSync)
 
 # sync at shutdown hook
 # ---------------------
-addHook("unloadProfile", lambda: checkCollection(at='shutdown'))
+addHook("unloadProfile", lambda: syncDispatch(at='shutdown'))

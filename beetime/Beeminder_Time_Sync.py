@@ -26,9 +26,8 @@ def getDataPointId(timestamp):
     else:
         return None
 
-def checkCollection(col=None, at=None):
-    """At time of shutdown (profile unloading), tally the time spent reviewing
-    and send it to Beeminder.
+def syncDispatch(col=None, at=None):
+    """Tally the time spent reviewing and send it to Beeminder.
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
@@ -65,26 +64,25 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     elif col.conf[BEE]['units'] is 1:
         reviewTime /= 60.0
 
-    slug = col.conf[BEE]['slug']
     reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
-    reportTime(col, reviewTime, comment, reportTimestamp, slug)
+    prepareApiCall(col, reviewTime, comment, reportTimestamp)
     mw.progress.finish()
 
-def reportTime(col, time, comment, timestamp, slug):
+def prepareApiCall(col, value, comment, timestamp):
     """Prepare the API call to beeminder.
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
     user = mw.col.conf[BEE]['username']
     token = mw.col.conf[BEE]['token']
-
+    slug = col.conf[BEE]['slug']
     data = {
         "timestamp": timestamp,
-        "value": time,
+        "value": value,
         "comment": comment,
         "auth_token": token}
 
-    datapointId = getDataPointId(timestamp)
+    cachedDatapointId = getDataPointId(timestamp)
 
     newDatapointId = sendApi(user, token, slug, data, cachedDatapointId)
     mw.col.conf[BEE]['lastupload'] = getDayStamp(timestamp)
