@@ -33,8 +33,9 @@ def checkCollection(col=None, at=None):
     Based on code by: muflax <mail@muflax.com>, 2012
     """
     if at == 'shutdown' and not mw.col.conf[BEE]['shutdown'] or \
-            at == 'ankiweb' and not mw.col.conf[BEE]['ankiweb'] or\
-            not at == 'manual':
+            at == 'ankiweb' and not mw.col.conf[BEE]['ankiweb'] or \
+            not at == 'manual' or \
+            not mw.col.conf[BEE]['enabled']:
         return
 
     col = col or mw.col
@@ -85,7 +86,6 @@ def reportTime(col, time, comment, timestamp, slug):
 
     datapointId = getDataPointId(timestamp)
 
-    if mw.col.conf[BEE]['enabled']:
-        did = sendApi(user, token, slug, data, datapointId)
-        mw.col.conf[BEE]['lastupload'] = getDayStamp(timestamp)
-        mw.col.conf[BEE]['did'] = did
+    newDatapointId = sendApi(user, token, slug, data, cachedDatapointId)
+    mw.col.conf[BEE]['lastupload'] = getDayStamp(timestamp)
+    mw.col.conf[BEE]['did'] = newDatapointId
