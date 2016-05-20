@@ -29,8 +29,19 @@ class BeeminderSettings(QDialog):
                 "units": 0,
                 "agg": 0}
 
+        # for first-time users
         if not BEE in self.mw.col.conf:
             self.mw.col.conf[BEE] = defaultConfig
+
+        # for users upgrading from v1.2 (to v1.4+)
+        if not "did" in self.mw.col.conf[BEE]:
+            # know nothing about unicode in python 2.7, but if I don't
+            # specify this here, they stick out as a sore thumb in the
+            # config dict
+            self.mw.col.conf[BEE][u'did'] = None
+            self.mw.col.conf[BEE][u'lastupload'] = None
+            self.mw.col.setMod()
+            print("Upgraded settings dict to enable caching")
 
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])

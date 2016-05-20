@@ -13,18 +13,23 @@ import datetime
 import httplib, urllib
 import json
 
-def checkDatapoints(user, token, date, time, slug):
-    """Check if there's already a datapoint for the current day and
-    return its ID if present, None if not.
+def getDayStamp(timestamp):
+    """ Converts a Unix timestamp to a Ymd string."""
+    return datetime.date.fromtimestamp(timestamp).strftime('%Y%m%d')
+
+def getDataPointId(timestamp):
+    """ Compare the cached dayStamp with the current one, return
+    a tuple with as the first item the cached datapoint ID if
+    the dayStamps match, otherwise None; the second item is
+    a boolean indicating whether they match (and thus if we need
+    to save the new ID and dayStamp.
+    Disregard mention of the second item in the tuple.
     """
-    datapoints = getApi(user, token, slug)
-    datapoints = json.loads(datapoints)
-    dayStamp = datetime.date.fromtimestamp(float(date)).strftime('%Y%m%d')
-    if datapoints[0]['daystamp'] == dayStamp:
-        datapointId = datapoints[0]['id']
+    if mw.col.conf[BEE]['overwrite'] and \
+       mw.col.conf[BEE]['lastupload'] == getDayStamp(timestamp):
+        return mw.col.conf[BEE]['did']
     else:
-        datapointId = None
-    return datapointId
+        return None
 
 def checkCollection(col=None):
     """At time of shutdown (profile unloading), tally the time spent reviewing
@@ -80,14 +85,12 @@ def reportTime(col, time, comment, timestamp, slug):
     user = mw.col.conf[BEE]['username']
     token = mw.col.conf[BEE]['token']
 
-    # optionally get a datapoint ID if we want to overwrite an existing
-    # datapoint
-    datapointId = None
-    if mw.col.conf[BEE]['overwrite']:
-        datapointId = checkDatapoints(user, token, date, time, slug)
+    datapointId = getDataPointId(timestamp)
 
     if mw.col.conf[BEE]['enabled']:
-        sendApi(user, token, slug, data, datapointId)
+        did = sendApi(user, token, slug, data, datapointId)
+        mw.col.conf[BEE]['lastupload'] = getDayStamp(timestamp)
+        mw.col.conf[BEE]['did'] = did
 
 def getApi(user, token, slug):
     """Get and return the datapoints for a given goal from Beeminder."""
@@ -99,7 +102,8 @@ def sendApi(user, token, slug, data, did=None):
     Otherwise a new datapoint is created. Returns the datapoint ID
     for use in caching.
     """
-    return apiCall("POST", user, token, slug, data, did)
+    response = apiCall("POST", user, token, slug, data, did)
+    return json.loads(response)['id']
 
 def apiCall(requestType, user, token, slug, data, did):
     """Prepare an API request.
