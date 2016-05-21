@@ -27,13 +27,13 @@ def syncDispatch(col=None, at=None):
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
-    if at == 'shutdown' and not mw.col.conf[BEE]['shutdown'] or \
-            at == 'ankiweb' and not mw.col.conf[BEE]['ankiweb'] or \
-            not mw.col.conf[BEE]['enabled']:
-        return
-
     col = col or mw.col
     if col is None:
+        return
+
+    if at == 'shutdown' and not col.conf[BEE]['shutdown'] or \
+            at == 'ankiweb' and not col.conf[BEE]['ankiweb'] or \
+            not col.conf[BEE]['enabled']:
         return
 
     mw.progress.start(immediate=True)
@@ -81,8 +81,8 @@ def prepareApiCall(col, value, comment, timestamp):
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
-    user = mw.col.conf[BEE]['username']
-    token = mw.col.conf[BEE]['token']
+    user = col.conf[BEE]['username']
+    token = col.conf[BEE]['token']
     slug = col.conf[BEE]['slug']
     data = {
         "timestamp": timestamp,
@@ -93,6 +93,6 @@ def prepareApiCall(col, value, comment, timestamp):
     cachedDatapointId = getDataPointId(timestamp)
 
     newDatapointId = sendApi(user, token, slug, data, cachedDatapointId)
-    mw.col.conf[BEE]['lastupload'] = getDayStamp(timestamp)
-    mw.col.conf[BEE]['did'] = newDatapointId
-    mw.col.setMod()
+    col.conf[BEE]['lastupload'] = getDayStamp(timestamp)
+    col.conf[BEE]['did'] = newDatapointId
+    col.setMod()
