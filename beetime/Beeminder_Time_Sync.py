@@ -8,10 +8,6 @@ from aqt import mw, progress
 from util import getDayStamp
 from Beeminder_Api import getApi, sendApi
 
-# DEBUG
-import pprint
-pp = pprint.pprint
-
 def getDataPointId(timestamp):
     """ Compare the cached dayStamp with the current one, return
     a tuple with as the first item the cached datapoint ID if
@@ -63,7 +59,20 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
     elif col.conf[BEE]['units'] is 1:
         reviewTime /= 60.0
 
-    reportTimestamp = col.sched.dayCutoff - 86400 + 12 * 60 * 60
+    # dayCutoff is the Unix timestamp of the user-set deadline
+    # deadline is the hour after which we consider a new day to have started
+    deadline = datetime.datetime.fromtimestamp(col.sched.dayCutoff).hour
+    now = datetime.datetime.today()
+
+    # upload all datapoints with an artificial time of 12 pm (noon)
+    NOON = 12
+    if now.hour < deadline:
+        reportDatetime = datetime.datetime(now.year, now.month, now.day - 1, NOON)
+    else:
+        reportDatetime = datetime.datetime(now.year, now.month, now.day, NOON)
+
+    # convert the datetime object to a Unix timestamp
+    reportTimestamp = time.mktime(reportDatetime.timetuple())
     prepareApiCall(col, reviewTime, comment, reportTimestamp)
     mw.progress.finish()
 
