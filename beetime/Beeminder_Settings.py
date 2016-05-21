@@ -26,6 +26,8 @@ class BeeminderSettings(QDialog):
                 "time": {
                     "enabled": False,
                     "slug": "",
+                    "did": None,
+                    "lastupload": None,
                     "units": 0,
                     "premium": False,
                     "overwrite": True,
@@ -33,12 +35,16 @@ class BeeminderSettings(QDialog):
                 "added": {
                     "enabled": False,
                     "slug": "",
+                    "did": None,
+                    "lastupload": None,
                     "premium": False,
                     "overwrite": True,
                     "agg": 0},
                 "reviewed": {
                     "enabled": False,
                     "slug": "",
+                    "did": None,
+                    "lastupload": None,
                     "premium": False,
                     "overwrite": True,
                     "agg": 0}}
@@ -48,14 +54,23 @@ class BeeminderSettings(QDialog):
             self.mw.col.conf[BEE] = defaultConfig
 
         # for users upgrading from v1.2 (to v1.4+)
-        if not "did" in self.mw.col.conf[BEE]:
-            # know nothing about unicode in python 2.7, but if I don't
-            # specify this here, they stick out as a sore thumb in the
-            # config dict
-            self.mw.col.conf[BEE][u'did'] = None
-            self.mw.col.conf[BEE][u'lastupload'] = None
+        if not "time" in self.mw.col.conf[BEE]:
+            # TODO: remove the duplication with defaultConfig (e.g. figure out
+            #       how to "add" dicts together)
+            goalTypeConfig = {
+                    "enabled": False,
+                    "slug": "",
+                    "did": None,
+                    "lastupload": None,
+                    "premium": False,
+                    "overwrite": False,
+                    "agg": 0}
+            self.mw.col.conf[BEE][u'time'] = goalTypeConfig
+            self.mw.col.conf[BEE][u'time'][u'units'] = 0
+            self.mw.col.conf[BEE][u'added'] = goalTypeConfig
+            self.mw.col.conf[BEE][u'reviewed'] = goalTypeConfig
             self.mw.col.setMod()
-            print("Upgraded settings dict to enable caching")
+            print("Upgraded settings dict to enable caching & multiple goals")
 
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])
