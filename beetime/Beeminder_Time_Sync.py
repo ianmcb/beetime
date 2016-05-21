@@ -33,9 +33,10 @@ def syncDispatch(col=None, at=None):
 
     # convert seconds to hours (units is 0) or minutes (units is 1)
     # keep seconds if units is 2
-    if col.conf[BEE]['units'] is 0:
+    units = col.conf[BEE]['time']['units']
+    if units is 0:
         reviewTime /= 60.0 * 60.0
-    elif col.conf[BEE]['units'] is 1:
+    elif units is 1:
         reviewTime /= 60.0
 
     # dayCutoff is the Unix timestamp of the user-set deadline
