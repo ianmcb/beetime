@@ -33,7 +33,6 @@ def syncDispatch(col=None, at=None):
     """
     if at == 'shutdown' and not mw.col.conf[BEE]['shutdown'] or \
             at == 'ankiweb' and not mw.col.conf[BEE]['ankiweb'] or \
-            not at == 'manual' or \
             not mw.col.conf[BEE]['enabled']:
         return
 
