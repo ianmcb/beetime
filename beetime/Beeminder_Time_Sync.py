@@ -1,8 +1,5 @@
 BEE = 'bee_conf' # name of key in anki configuration dict
 
-from anki.lang import _, ngettext
-from anki.utils import fmtTimeSpan
-
 from aqt import mw, progress
 
 from util import getDayStamp
@@ -28,7 +25,7 @@ def syncDispatch(col=None, at=None):
     mw.progress.start(immediate=True)
     mw.progress.update("Syncing with Beeminder...")
 
-    numberOfCards, reviewTime = getTimeSpentReviewing()
+    numberOfCards, reviewTime = lookupReviewed(col)
     comment = formatComment(numberOfCards, reviewTime)
 
     # convert seconds to hours (units is 0) or minutes (units is 1)
@@ -70,7 +67,7 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
         "comment": comment,
         "auth_token": token}
 
-    cachedDatapointId = getDataPointId(goal_type, timestamp)
+    cachedDatapointId = getDataPointId(col, goal_type, timestamp)
 
     newDatapointId = sendApi(user, token, slug, data, cachedDatapointId)
     col.conf[BEE][goal_type]['lastupload'] = getDayStamp(timestamp)

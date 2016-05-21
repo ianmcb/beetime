@@ -66,7 +66,9 @@ class BeeminderSettings(QDialog):
                     "overwrite": False,
                     "agg": 0}
             self.mw.col.conf[BEE][u'time'] = goalTypeConfig
-            self.mw.col.conf[BEE][u'time'][u'units'] = 0
+            self.mw.col.conf[BEE]['time']['units'] = 0
+            self.mw.col.conf[BEE]['time']['did'] = self.mw.col.conf[BEE]['did']
+            self.mw.col.conf[BEE]['time']['lastupload'] = self.mw.col.conf[BEE]['lastupload']
             self.mw.col.conf[BEE][u'added'] = goalTypeConfig
             self.mw.col.conf[BEE][u'reviewed'] = goalTypeConfig
             self.mw.col.setMod()
