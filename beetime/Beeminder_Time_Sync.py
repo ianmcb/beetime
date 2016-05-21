@@ -53,17 +53,17 @@ def syncDispatch(col=None, at=None):
 
     # convert the datetime object to a Unix timestamp
     reportTimestamp = time.mktime(reportDatetime.timetuple())
-    prepareApiCall(col, reviewTime, comment, reportTimestamp)
+    prepareApiCall(col, reportTimestamp, reviewTime, comment)
     mw.progress.finish()
 
-def prepareApiCall(col, value, comment, timestamp):
+def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
     """Prepare the API call to beeminder.
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
     user = col.conf[BEE]['username']
     token = col.conf[BEE]['token']
-    slug = col.conf[BEE]['slug']
+    slug = col.conf[BEE][goal_type]['slug']
     data = {
         "timestamp": timestamp,
         "value": value,
