@@ -70,9 +70,9 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
         "comment": comment,
         "auth_token": token}
 
-    cachedDatapointId = getDataPointId(timestamp)
+    cachedDatapointId = getDataPointId(goal_type, timestamp)
 
     newDatapointId = sendApi(user, token, slug, data, cachedDatapointId)
-    col.conf[BEE]['lastupload'] = getDayStamp(timestamp)
-    col.conf[BEE]['did'] = newDatapointId
+    col.conf[BEE][goal_type]['lastupload'] = getDayStamp(timestamp)
+    col.conf[BEE][goal_type]['did'] = newDatapointId
     col.setMod()

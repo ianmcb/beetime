@@ -1,6 +1,6 @@
 from util import getDayStamp
 
-def getDataPointId(col, goal_type, timestamp):
+def getDataPointId(goal_type, timestamp):
     """ Compare the cached dayStamp with the current one, return
     a tuple with as the first item the cached datapoint ID if
     the dayStamps match, otherwise None; the second item is
@@ -8,9 +8,9 @@ def getDataPointId(col, goal_type, timestamp):
     to save the new ID and dayStamp.
     Disregard mention of the second item in the tuple.
     """
-    if mw.col.conf[BEE]['overwrite'] and \
-       mw.col.conf[BEE]['lastupload'] == getDayStamp(timestamp):
-        return mw.col.conf[BEE]['did']
+    if mw.col.conf[BEE][goal_type]['overwrite'] and \
+       mw.col.conf[BEE][goal_type]['lastupload'] == getDayStamp(timestamp):
+        return mw.col.conf[BEE][goal_type]['did']
     else:
         return None
 
