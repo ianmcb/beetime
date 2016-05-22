@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
-    <height>785</height>
+    <width>539</width>
+    <height>501</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,10 +16,10 @@
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>501</width>
-     <height>461</height>
+     <x>10</x>
+     <y>10</y>
+     <width>521</width>
+     <height>481</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="top_gridLayout">
@@ -46,7 +46,7 @@
         <rect>
          <x>10</x>
          <y>30</y>
-         <width>471</width>
+         <width>461</width>
          <height>118</height>
         </rect>
        </property>
@@ -96,34 +96,34 @@
       <widget class="QToolBox" name="goals_toolBox">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>150</y>
-         <width>521</width>
-         <height>271</height>
+         <x>10</x>
+         <y>160</y>
+         <width>501</width>
+         <height>281</height>
         </rect>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="time_page">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>521</width>
-          <height>178</height>
+          <width>501</width>
+          <height>188</height>
          </rect>
         </property>
         <attribute name="label">
-         <string>Sync time spent reviewing</string>
+         <string>Sync review time</string>
         </attribute>
         <widget class="QGroupBox" name="time_enabled">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>0</y>
-           <width>471</width>
-           <height>171</height>
+           <width>491</width>
+           <height>191</height>
           </rect>
          </property>
          <property name="title">
@@ -137,8 +137,8 @@
            <rect>
             <x>20</x>
             <y>20</y>
-            <width>451</width>
-            <height>151</height>
+            <width>431</width>
+            <height>161</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -228,25 +228,122 @@
          </widget>
         </widget>
        </widget>
+       <widget class="QWidget" name="reviewed_page">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>501</width>
+          <height>188</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Sync number of reviews</string>
+        </attribute>
+        <widget class="QGroupBox" name="reviewed_enabled">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>0</y>
+           <width>491</width>
+           <height>181</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Enable this goal</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="gridLayoutWidget_7">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>20</y>
+            <width>431</width>
+            <height>131</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="2" column="1">
+            <widget class="QLabel" name="reviewed_slug_label">
+             <property name="text">
+              <string>Goalname</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QGroupBox" name="reviewed_premium">
+             <property name="title">
+              <string>Use premium features</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="gridLayoutWidget_8">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>30</y>
+                <width>350</width>
+                <height>52</height>
+               </rect>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_5">
+               <item row="1" column="0">
+                <widget class="QComboBox" name="reviewed_agg">
+                 <item>
+                  <property name="text">
+                   <string extracomment="use with the default sum aggregation">overwrite the datapoint (use with aggday &quot;sum&quot;)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string extracomment="use with last or max aggregation">keep multiple datapoints (use with &quot;last&quot;, &quot;max&quot;, ...)</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="reviewed_agg_label">
+                 <property name="text">
+                  <string>Behaviour when syncing multiple times in one day</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLineEdit" name="reviewed_slug"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </widget>
        <widget class="QWidget" name="added_page">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>521</width>
-          <height>178</height>
+          <width>501</width>
+          <height>188</height>
          </rect>
         </property>
         <attribute name="label">
-         <string>Sync number of cards added</string>
+         <string>Sync number of additions</string>
         </attribute>
         <widget class="QGroupBox" name="added_enabled">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>0</y>
-           <width>471</width>
-           <height>171</height>
+           <width>491</width>
+           <height>191</height>
           </rect>
          </property>
          <property name="title">
@@ -260,8 +357,8 @@
            <rect>
             <x>20</x>
             <y>20</y>
-            <width>451</width>
-            <height>141</height>
+            <width>431</width>
+            <height>161</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -321,102 +418,26 @@
            <item row="2" column="0">
             <widget class="QLineEdit" name="added_slug"/>
            </item>
-          </layout>
-         </widget>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="reviewed_page">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>521</width>
-          <height>178</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>Sync number of cards reviewed</string>
-        </attribute>
-        <widget class="QGroupBox" name="reviewed_enabled">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>0</y>
-           <width>471</width>
-           <height>171</height>
-          </rect>
-         </property>
-         <property name="title">
-          <string>Enable this goal</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="gridLayoutWidget_7">
-          <property name="geometry">
-           <rect>
-            <x>20</x>
-            <y>20</y>
-            <width>451</width>
-            <height>151</height>
-           </rect>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="2" column="1">
-            <widget class="QLabel" name="reviewed_slug_label">
-             <property name="text">
-              <string>Goalname</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QGroupBox" name="reviewed_premium">
-             <property name="title">
-              <string>Use premium features</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="gridLayoutWidget_8">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>30</y>
-                <width>350</width>
-                <height>52</height>
-               </rect>
+           <item row="3" column="0">
+            <widget class="QComboBox" name="added_type">
+             <item>
+              <property name="text">
+               <string>cards</string>
               </property>
-              <layout class="QGridLayout" name="gridLayout_5">
-               <item row="1" column="0">
-                <widget class="QComboBox" name="reviewed_agg">
-                 <item>
-                  <property name="text">
-                   <string extracomment="use with the default sum aggregation">overwrite the datapoint (use with aggday &quot;sum&quot;)</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string extracomment="use with last or max aggregation">keep multiple datapoints (use with &quot;last&quot;, &quot;max&quot;, ...)</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="reviewed_agg_label">
-                 <property name="text">
-                  <string>Behaviour when syncing multiple times in one day</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
+             </item>
+             <item>
+              <property name="text">
+               <string>notes</string>
+              </property>
+             </item>
             </widget>
            </item>
-           <item row="2" column="0">
-            <widget class="QLineEdit" name="reviewed_slug"/>
+           <item row="3" column="1">
+            <widget class="QLabel" name="added_type_label">
+             <property name="text">
+              <string>Type</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
