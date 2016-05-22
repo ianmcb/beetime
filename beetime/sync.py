@@ -3,7 +3,7 @@ BEE = 'bee_conf' # name of key in anki configuration dict
 from aqt import mw, progress
 
 from util import getDayStamp
-from Beeminder_Api import getApi, sendApi
+from api import getApi, sendApi
 from lookup import *
 
 import datetime, time

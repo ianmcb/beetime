@@ -1,9 +1,9 @@
-from beeminder_settings_layout import Ui_BeeminderSettings
+from settings_layout import Ui_BeeminderSettings
 
 from aqt import mw
 from aqt.qt import *
 
-from Beeminder_Time_Sync import BEE
+from sync import BEE
 
 class BeeminderSettings(QDialog):
     """Create a settings menu."""

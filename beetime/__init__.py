@@ -1,5 +1,5 @@
-from Beeminder_Settings import BeeminderSettings
-from Beeminder_Time_Sync import syncDispatch
+from settings import BeeminderSettings
+from sync import syncDispatch
 
 from anki.hooks import addHook
 

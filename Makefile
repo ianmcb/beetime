@@ -1,10 +1,14 @@
-version := $(shell sed -n '/^\# Version: /p' <Beeminder_Time_Sync.py | awk '{print $$3}')
+base := Beeminder_Sync
+version := $(shell sed -n '/^\# Version: /p' <$(base).py | awk '{print $$3}')
 
-default: ui
-	touch Beeminder_Time_Sync.zip
-	rm Beeminder_Time_Sync.zip
-	zip Beeminder_Time_Sync.zip Beeminder_Time_Sync.py beetime/*py
-	cp Beeminder_Time_Sync.zip Beeminder_Time_Sync-$(version).zip
+default: $(base) ui
+
+$(base):
+	touch $@.zip
+	rm $@.zip
+	zip $@.zip $@.py beetime/*py
+	mv $@.zip $@-$(version).zip
+
 
 ui:
-	pyuic4 beetime/beeminder_settings_layout.ui >beetime/beeminder_settings_layout.py
+	pyuic4 beetime/settings_layout.ui >beetime/settings_layout.py
