@@ -37,6 +37,7 @@ class BeeminderSettings(QDialog):
                     "slug": "",
                     "did": None,
                     "lastupload": None,
+                    "type": "cards",
                     "premium": False,
                     "overwrite": True,
                     "agg": 0},
@@ -70,6 +71,7 @@ class BeeminderSettings(QDialog):
             self.mw.col.conf[BEE]['time']['did'] = self.mw.col.conf[BEE]['did']
             self.mw.col.conf[BEE]['time']['lastupload'] = self.mw.col.conf[BEE]['lastupload']
             self.mw.col.conf[BEE][u'added'] = goalTypeConfig
+            self.mw.col.conf[BEE]['added']['type'] = "cards"
             self.mw.col.conf[BEE][u'reviewed'] = goalTypeConfig
             self.mw.col.setMod()
             print("Upgraded settings dict to enable caching & multiple goals")

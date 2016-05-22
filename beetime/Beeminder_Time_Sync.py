@@ -25,17 +25,6 @@ def syncDispatch(col=None, at=None):
     mw.progress.start(immediate=True)
     mw.progress.update("Syncing with Beeminder...")
 
-    numberOfCards, reviewTime = lookupReviewed(col)
-    comment = formatComment(numberOfCards, reviewTime)
-
-    # convert seconds to hours (units is 0) or minutes (units is 1)
-    # keep seconds if units is 2
-    units = col.conf[BEE]['time']['units']
-    if units is 0:
-        reviewTime /= 60.0 * 60.0
-    elif units is 1:
-        reviewTime /= 60.0
-
     # dayCutoff is the Unix timestamp of the user-set deadline
     # deadline is the hour after which we consider a new day to have started
     deadline = datetime.datetime.fromtimestamp(col.sched.dayCutoff).hour
@@ -47,10 +36,35 @@ def syncDispatch(col=None, at=None):
         reportDatetime = datetime.datetime(now.year, now.month, now.day - 1, NOON)
     else:
         reportDatetime = datetime.datetime(now.year, now.month, now.day, NOON)
-
     # convert the datetime object to a Unix timestamp
     reportTimestamp = time.mktime(reportDatetime.timetuple())
-    prepareApiCall(col, reportTimestamp, reviewTime, comment)
+
+    if isEnabled('time') or isEnabled('reviewed'):
+        numberOfCards, reviewTime = lookupReviewed(col)
+        comment = formatComment(numberOfCards, reviewTime)
+
+        if isEnabled('time'):
+            # convert seconds to hours (units is 0) or minutes (units is 1)
+            # keep seconds if units is 2
+            units = col.conf[BEE]['time']['units']
+            if units is 0:
+                reviewTime /= 60.0 * 60.0
+            elif units is 1:
+                reviewTime /= 60.0
+            # report time spent reviewing
+            prepareApiCall(col, reportTimestamp, reviewTime, comment)
+
+        if isEnabled('reviewed'):
+            # report number of cards reviewed
+            prepareApiCall(col, reportTimestamp, numberOfCards, comment, goal_type='reviewed')
+
+    if isEnabled('added'):
+        added = col.conf[BEE]['added']['type']
+        numberAdded = lookupAdded(col, added)
+        # report number of cards or notes added
+        prepareApiCall(col, reportTimestamp, numberAdded,
+                "added %d %s" % (numberAdded, added), goal_type='added')
+
     mw.progress.finish()
 
 def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
@@ -73,3 +87,6 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
     col.conf[BEE][goal_type]['lastupload'] = getDayStamp(timestamp)
     col.conf[BEE][goal_type]['did'] = newDatapointId
     col.setMod()
+
+def isEnabled(goal):
+    return mw.col.conf[BEE][goal]['enabled']

@@ -27,14 +27,15 @@ def formatComment(numberOfCards, reviewTime):
 
 def lookupReviewed(col):
     """Lookup the number of cards reviewed and the time spent reviewing them."""
-    numberOfCards, reviewTime = col.db.first("""
+    cardsReviewed, reviewTime = col.db.first("""
 select count(), sum(time)/1000 from revlog
 where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
 
-    numberOfCards = numberOfCards or 0
+    cardsReviewed = cardsReviewed or 0
     reviewTime = reviewTime or 0
 
-    return (numberOfCards, reviewTime)
+    return (cardsReviewed, reviewTime)
 
-def lookupAdded():
-    pass
+def lookupAdded(col, added='cards'):
+    cardsAdded = col.db.scalar("select count() from %s where id > %d" % (added, (col.sched.dayCutoff - 86400) * 1000))
+    return cardsAdded
