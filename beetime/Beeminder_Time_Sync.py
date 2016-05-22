@@ -59,7 +59,7 @@ def syncDispatch(col=None, at=None):
             prepareApiCall(col, reportTimestamp, numberOfCards, comment, goal_type='reviewed')
 
     if isEnabled('added'):
-        added = col.conf[BEE]['added']['type']
+        added = ["cards", "notes"][col.conf[BEE]['added']['type']]
         numberAdded = lookupAdded(col, added)
         # report number of cards or notes added
         prepareApiCall(col, reportTimestamp, numberAdded,

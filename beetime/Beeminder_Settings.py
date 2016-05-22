@@ -36,6 +36,7 @@ class BeeminderSettings(QDialog):
                     "enabled": False,
                     "slug": "",
                     "did": None,
+                    "type": 0,
                     "lastupload": None,
                     "type": "cards",
                     "premium": False,
@@ -71,7 +72,7 @@ class BeeminderSettings(QDialog):
             self.mw.col.conf[BEE]['time']['did'] = self.mw.col.conf[BEE]['did']
             self.mw.col.conf[BEE]['time']['lastupload'] = self.mw.col.conf[BEE]['lastupload']
             self.mw.col.conf[BEE][u'added'] = goalTypeConfig
-            self.mw.col.conf[BEE]['added']['type'] = "cards"
+            self.mw.col.conf[BEE]['added']['type'] = 0
             self.mw.col.conf[BEE][u'reviewed'] = goalTypeConfig
             self.mw.col.setMod()
             print("Upgraded settings dict to enable caching & multiple goals")
@@ -84,6 +85,7 @@ class BeeminderSettings(QDialog):
         self.ui.ankiweb.setChecked(self.mw.col.conf[BEE]['ankiweb'])
 
         self.ui.time_units.setCurrentIndex(self.mw.col.conf[BEE]['time']['units'])
+        self.ui.added_type.setCurrentIndex(self.mw.col.conf[BEE]['added']['type'])
 
         self.ui.time_slug.setText(self.mw.col.conf[BEE]['time']['slug'])
         self.ui.time_enabled.setChecked(self.mw.col.conf[BEE]['time']['enabled'])
@@ -114,6 +116,7 @@ class BeeminderSettings(QDialog):
         self.mw.col.conf[BEE]['ankiweb'] = self.ui.ankiweb.isChecked()
 
         self.mw.col.conf[BEE]['time']['units'] = self.ui.time_units.currentIndex()
+        self.mw.col.conf[BEE]['added']['type'] = self.ui.added_type.currentIndex()
 
         self.mw.col.conf[BEE]['time']['slug'] = self.ui.time_slug.text()
         self.mw.col.conf[BEE]['time']['enabled'] = self.ui.time_enabled.isChecked()
