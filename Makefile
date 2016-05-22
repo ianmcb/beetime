@@ -1,9 +1,9 @@
 base := Beeminder_Sync
 version := $(shell sed -n '/^\# Version: /p' <$(base).py | awk '{print $$3}')
 
-default: $(base) ui
+default: $(base)
 
-$(base):
+$(base): ui
 	touch $@.zip
 	rm $@.zip
 	zip $@.zip $@.py beetime/*py
