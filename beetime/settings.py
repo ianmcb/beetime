@@ -109,6 +109,10 @@ class BeeminderSettings(QDialog):
         self.close()
 
     def onAccept(self):
+        self.onApply()
+        self.close()
+
+    def onApply(self):
         self.mw.col.conf[BEE]['username'] = self.ui.username.text()
         self.mw.col.conf[BEE]['token'] = self.ui.token.text()
         self.mw.col.conf[BEE]['enabled'] = self.ui.enabled.isChecked()
@@ -141,7 +145,6 @@ class BeeminderSettings(QDialog):
                                                                         self.mw.col.conf[BEE]['added']['agg'])
 
         self.mw.col.setMod()
-        self.close()
 
     def setOverwrite(self, premium, agg):
         return not premium or (premium and agg is 0)
