@@ -66,11 +66,10 @@ def syncDispatch(col=None, at=None):
 
     if isEnabled('due'):
         numberDue = lookupDue(col)
+        comment = ("no more cards " if numberDue is 0 else "still %d card%s " % (numberDue, "" if numberDue is 1 else "s")) + \
+                "due at %02d:%02d" % (now.hour, now.minute)
         # report number of cards due
-        # TODO: add a timestamp, similar to gmailzero goals?
-        #       e.g. "still 35 cards due at 19:33"
-        prepareApiCall(col, reportTimestamp, numberDue,
-                "still %d due" % (numberDue), goal_type='due')
+        prepareApiCall(col, reportTimestamp, numberDue, comment, goal_type='due')
 
     mw.progress.finish()
 
