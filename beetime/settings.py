@@ -48,6 +48,13 @@ class BeeminderSettings(QDialog):
                     "lastupload": None,
                     "premium": False,
                     "overwrite": True,
+                    "agg": 0},
+                "due": {
+                    "enabled": False,
+                    "slug": "",
+                    "did": None,
+                    "lastupload": None,
+                    "overwrite": True,
                     "agg": 0}}
 
         # for first-time users
@@ -81,6 +88,17 @@ class BeeminderSettings(QDialog):
             self.mw.col.conf[BEE]['added']['type'] = 0
             print("Hotfix v1.6.1")
 
+        # for users upgrading from v1.6.1
+        if not "due" in self.mw.col.conf[BEE]:
+            self.mw.col.conf[BEE][u'due'] = {
+                    "enabled": False,
+                    "slug": "",
+                    "did": None,
+                    "lastupload": None,
+                    "overwrite": True,
+                    "agg": 0}
+            print("Upgraded settings dict to enable the due cards metric")
+
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])
         self.ui.token.setText(self.mw.col.conf[BEE]['token'])
@@ -105,6 +123,10 @@ class BeeminderSettings(QDialog):
         self.ui.added_enabled.setChecked(self.mw.col.conf[BEE]['added']['enabled'])
         self.ui.added_premium.setChecked(self.mw.col.conf[BEE]['added']['premium'])
         self.ui.added_agg.setCurrentIndex(self.mw.col.conf[BEE]['added']['agg'])
+
+        self.ui.due_slug.setText(self.mw.col.conf[BEE]['due']['slug'])
+        self.ui.due_enabled.setChecked(self.mw.col.conf[BEE]['due']['enabled'])
+        self.ui.due_agg.setCurrentIndex(self.mw.col.conf[BEE]['due']['agg'])
 
         self.parent = parent
         self.show()
@@ -147,6 +169,11 @@ class BeeminderSettings(QDialog):
         self.mw.col.conf[BEE]['added']['agg'] = self.ui.added_agg.currentIndex()
         self.mw.col.conf[BEE]['added']['overwrite'] = self.setOverwrite(self.mw.col.conf[BEE]['added']['premium'],
                                                                         self.mw.col.conf[BEE]['added']['agg'])
+
+        self.mw.col.conf[BEE]['due']['slug'] = self.ui.due_slug.text()
+        self.mw.col.conf[BEE]['due']['enabled'] = self.ui.due_enabled.isChecked()
+        self.mw.col.conf[BEE]['due']['agg'] = self.ui.due_agg.currentIndex()
+        self.mw.col.conf[BEE]['due']['overwrite'] = self.mw.col.conf[BEE]['due']['agg'] is 0
 
         self.mw.col.setMod()
 
