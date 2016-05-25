@@ -39,3 +39,10 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
 def lookupAdded(col, added='cards'):
     cardsAdded = col.db.scalar("select count() from %s where id > %d" % (added, (col.sched.dayCutoff - 86400) * 1000))
     return cardsAdded
+
+def lookupDue(col):
+    """Lookup the number of cards due."""
+    cardsDue = col.db.scalar("""
+select count() from cards
+where type > 2""")
+    return cardsDue
