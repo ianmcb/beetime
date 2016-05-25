@@ -38,7 +38,6 @@ class BeeminderSettings(QDialog):
                     "did": None,
                     "type": 0,
                     "lastupload": None,
-                    "type": "cards",
                     "premium": False,
                     "overwrite": True,
                     "agg": 0},
@@ -76,6 +75,11 @@ class BeeminderSettings(QDialog):
             self.mw.col.conf[BEE][u'reviewed'] = goalTypeConfig
             self.mw.col.setMod()
             print("Upgraded settings dict to enable caching & multiple goals")
+
+        # for users upgrading from v1.6
+        if self.mw.col.conf[BEE]['added']['type'] == "cards":
+            self.mw.col.conf[BEE]['added']['type'] = 0
+            print("Hotfix v1.6.1")
 
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])
