@@ -7,7 +7,7 @@ version := $(shell sed -n '/^\# Version: /p' <$(base).py | awk '{print $$3}')
 
 Anki.last := $(shell cat "$(lasttemp)")
 
-.PHONY: temp test retest
+.PHONY: temp test token retest
 
 default: zip
 
@@ -25,7 +25,7 @@ ui: $(module)/$(settings).py
 $(module)/$(settings).py: $(module)/$(settings).ui
 	pyuic4 "$<" > "$@"
 
-test: ui | temp
+test: ui | temp token
 	anki -b "$(Anki.temp)"
 
 retest: ui |
@@ -36,3 +36,6 @@ temp:
 	mkdir "$(Anki.temp)/addons"
 	ln -s -t "$(Anki.temp)/addons/" "$(git)/$(base).py" "$(git)/$(module)"
 	@echo "$(Anki.temp)" > "$(lasttemp)"
+
+token:
+	@fgrep '$beemauth = "' ~/.tagtimerc | sed 's/.\+"\(.\+\)".\+/\1/'
