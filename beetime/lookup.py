@@ -41,8 +41,17 @@ def lookupAdded(col, added='cards'):
     return cardsAdded
 
 def lookupDue(col):
-    """Lookup the number of cards due."""
+    """
+    Lookup the number of cards due. The due column in the cards table has
+    a different meaning depending on the queue the card is in. For cards
+    in learning (queue = 1), which we want to count as well, due is a Unix
+    timestamp. For mature cards or in review (queue in 2,3) due is the number
+    of days since the creation of the collection."""
+    from datetime import datetime
+    dueDays = (datetime.fromtimestamp(col.sched.dayCutoff) -
+            datetime.fromtimestamp(col.crt)).days
     cardsDue = col.db.scalar("""
 select count() from cards
-where type > 2""")
+where (due < ? and queue in (2,3))
+or (due < ? and queue = 1)""", dueDays, col.sched.dayCutoff)
     return cardsDue
