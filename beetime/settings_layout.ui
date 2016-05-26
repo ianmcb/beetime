@@ -110,8 +110,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>100</width>
-          <height>30</height>
+          <width>501</width>
+          <height>177</height>
          </rect>
         </property>
         <attribute name="label">
@@ -138,7 +138,7 @@
             <x>20</x>
             <y>20</y>
             <width>431</width>
-            <height>161</height>
+            <height>151</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -175,54 +175,42 @@
              </property>
             </widget>
            </item>
-           <item row="6" column="0">
-            <widget class="QGroupBox" name="time_premium">
-             <property name="title">
-              <string>Use premium features</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="gridLayoutWidget_3">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>30</y>
-                <width>350</width>
-                <height>52</height>
-               </rect>
-              </property>
-              <layout class="QGridLayout" name="time_premium_gridLayout">
-               <item row="1" column="0">
-                <widget class="QComboBox" name="time_agg">
-                 <item>
-                  <property name="text">
-                   <string extracomment="use with the default sum aggregation">overwrite the datapoint (use with aggday &quot;sum&quot;)</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string extracomment="use with last or max aggregation">keep multiple datapoints (use with &quot;last&quot;, &quot;max&quot;, ...)</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="time_agg_label">
-                 <property name="text">
-                  <string>Behaviour when syncing multiple times in one day</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
            <item row="2" column="0">
             <widget class="QLineEdit" name="time_slug"/>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="time_agg_label">
+             <property name="text">
+              <string>Behaviour when syncing multiple times in one day</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QComboBox" name="time_agg">
+             <item>
+              <property name="text">
+               <string extracomment="use with the default sum aggregation">overwrite the datapoint (use with aggday &quot;sum&quot;)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string extracomment="use with last or max aggregation">keep multiple datapoints (use with &quot;last&quot;, &quot;max&quot;, ...)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -233,8 +221,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>100</width>
-          <height>30</height>
+          <width>501</width>
+          <height>177</height>
          </rect>
         </property>
         <attribute name="label">
@@ -272,54 +260,42 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
-            <widget class="QGroupBox" name="reviewed_premium">
-             <property name="title">
-              <string>Use premium features</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="gridLayoutWidget_8">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>30</y>
-                <width>350</width>
-                <height>52</height>
-               </rect>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_5">
-               <item row="1" column="0">
-                <widget class="QComboBox" name="reviewed_agg">
-                 <item>
-                  <property name="text">
-                   <string extracomment="use with the default sum aggregation">overwrite the datapoint (use with aggday &quot;sum&quot;)</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string extracomment="use with last or max aggregation">keep multiple datapoints (use with &quot;last&quot;, &quot;max&quot;, ...)</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="reviewed_agg_label">
-                 <property name="text">
-                  <string>Behaviour when syncing multiple times in one day</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
            <item row="2" column="0">
             <widget class="QLineEdit" name="reviewed_slug"/>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="reviewed_agg_label">
+             <property name="text">
+              <string>Behaviour when syncing multiple times in one day</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QComboBox" name="reviewed_agg">
+             <item>
+              <property name="text">
+               <string extracomment="use with the default sum aggregation">overwrite the datapoint (use with aggday &quot;sum&quot;)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string extracomment="use with last or max aggregation">keep multiple datapoints (use with &quot;last&quot;, &quot;max&quot;, ...)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -343,7 +319,7 @@
            <x>10</x>
            <y>0</y>
            <width>491</width>
-           <height>191</height>
+           <height>171</height>
           </rect>
          </property>
          <property name="title">
@@ -358,65 +334,19 @@
             <x>20</x>
             <y>20</y>
             <width>431</width>
-            <height>161</height>
+            <height>151</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
+           <item row="2" column="0">
+            <widget class="QLineEdit" name="added_slug"/>
+           </item>
            <item row="2" column="1">
             <widget class="QLabel" name="added_slug_label">
              <property name="text">
               <string>Goalname</string>
              </property>
             </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QGroupBox" name="added_premium">
-             <property name="title">
-              <string>Use premium features</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="gridLayoutWidget_6">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>30</y>
-                <width>350</width>
-                <height>52</height>
-               </rect>
-              </property>
-              <layout class="QGridLayout" name="premium_gridLayout">
-               <item row="1" column="0">
-                <widget class="QComboBox" name="added_agg">
-                 <item>
-                  <property name="text">
-                   <string extracomment="use with the default sum aggregation">overwrite the datapoint (use with aggday &quot;sum&quot;)</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string extracomment="use with last or max aggregation">keep multiple datapoints (use with &quot;last&quot;, &quot;max&quot;, ...)</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="added_agg_label">
-                 <property name="text">
-                  <string>Behaviour when syncing multiple times in one day</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLineEdit" name="added_slug"/>
            </item>
            <item row="3" column="0">
             <widget class="QComboBox" name="added_type">
@@ -436,6 +366,40 @@
             <widget class="QLabel" name="added_type_label">
              <property name="text">
               <string>Type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="5" column="0">
+            <widget class="QComboBox" name="added_agg">
+             <item>
+              <property name="text">
+               <string extracomment="use with the default sum aggregation">overwrite the datapoint (use with aggday &quot;sum&quot;)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string extracomment="use with last or max aggregation">keep multiple datapoints (use with &quot;last&quot;, &quot;max&quot;, ...)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="added_agg_label">
+             <property name="text">
+              <string>Behaviour when syncing multiple times in one day</string>
              </property>
             </widget>
            </item>
@@ -537,10 +501,24 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>enabled</tabstop>
+  <tabstop>username</tabstop>
+  <tabstop>token</tabstop>
+  <tabstop>shutdown</tabstop>
+  <tabstop>ankiweb</tabstop>
+  <tabstop>time_enabled</tabstop>
   <tabstop>time_slug</tabstop>
   <tabstop>time_units</tabstop>
-  <tabstop>time_premium</tabstop>
   <tabstop>time_agg</tabstop>
+  <tabstop>reviewed_enabled</tabstop>
+  <tabstop>reviewed_slug</tabstop>
+  <tabstop>reviewed_agg</tabstop>
+  <tabstop>added_enabled</tabstop>
+  <tabstop>added_slug</tabstop>
+  <tabstop>added_type</tabstop>
+  <tabstop>added_agg</tabstop>
+  <tabstop>due_enabled</tabstop>
+  <tabstop>due_slug</tabstop>
+  <tabstop>due_agg</tabstop>
  </tabstops>
  <resources/>
  <connections/>

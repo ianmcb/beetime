@@ -94,7 +94,6 @@ class beeconf():
                 "did": None,
                 "lastupload": None,
                 "units": 0,
-                "premium": False,
                 "overwrite": True,
                 "agg": 0}
         self.added_default = {
@@ -103,7 +102,6 @@ class beeconf():
                 "did": None,
                 "type": 0,
                 "lastupload": None,
-                "premium": False,
                 "overwrite": True,
                 "agg": 0}
         self.reviewed_default = {
@@ -111,7 +109,6 @@ class beeconf():
                 "slug": "",
                 "did": None,
                 "lastupload": None,
-                "premium": False,
                 "overwrite": True,
                 "agg": 0}
         self.due_default = {
