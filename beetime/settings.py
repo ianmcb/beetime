@@ -5,8 +5,6 @@ from aqt import mw
 from aqt.qt import *
 from aqt.utils import askUser
 
-from sync import BEE
-
 from PyQt4 import QtGui
 
 class BeeminderSettings(QDialog):
