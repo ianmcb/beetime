@@ -56,7 +56,7 @@ class beeconf():
 
     def create(self):
         self.default()
-        self.bee = self.default
+        self.bee = self._default
         self.store()
 
     def nuke(self):
@@ -114,7 +114,7 @@ class beeconf():
                 "did": None,
                 "lastupload": None,
                 "overwrite": True}
-        self.default = {
+        self._default = {
                 "username": "",
                 "token": "",
                 "enabled": True,
