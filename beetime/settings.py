@@ -1,3 +1,4 @@
+from config import beeconf
 from settings_layout import Ui_BeeminderSettings
 
 from aqt import mw
@@ -14,37 +15,39 @@ class BeeminderSettings(QDialog):
         self.ui = Ui_BeeminderSettings()
         self.ui.setupUi(self)
 
+        self.bc = beeconf()
+
         self.connect(self.ui.buttonBox, SIGNAL("rejected()"), self.onReject)
         self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)
 
     def display(self, parent):
-        self.ui.username.setText(self.mw.col.conf[BEE]['username'])
-        self.ui.token.setText(self.mw.col.conf[BEE]['token'])
-        self.ui.enabled.setChecked(self.mw.col.conf[BEE]['enabled'])
-        self.ui.shutdown.setChecked(self.mw.col.conf[BEE]['shutdown'])
-        self.ui.ankiweb.setChecked(self.mw.col.conf[BEE]['ankiweb'])
+        self.ui.username.setText(self.bc.tget('username'))
+        self.ui.token.setText(self.bc.tget('token'))
+        self.ui.enabled.setChecked(self.bc.tget('enabled'))
+        self.ui.shutdown.setChecked(self.bc.tget('shutdown'))
+        self.ui.ankiweb.setChecked(self.bc.tget('ankiweb'))
 
-        self.ui.time_units.setCurrentIndex(self.mw.col.conf[BEE]['time']['units'])
-        self.ui.added_type.setCurrentIndex(self.mw.col.conf[BEE]['added']['type'])
+        self.ui.time_units.setCurrentIndex(self.bc.get('time', 'units'))
+        self.ui.added_type.setCurrentIndex(self.bc.get('added', 'type'))
 
-        self.ui.time_slug.setText(self.mw.col.conf[BEE]['time']['slug'])
-        self.ui.time_enabled.setChecked(self.mw.col.conf[BEE]['time']['enabled'])
-        self.ui.time_premium.setChecked(self.mw.col.conf[BEE]['time']['premium'])
-        self.ui.time_agg.setCurrentIndex(self.mw.col.conf[BEE]['time']['agg'])
+        self.ui.time_slug.setText(self.bc.get('time', 'slug'))
+        self.ui.time_enabled.setChecked(self.bc.get('time', 'enabled'))
+        self.ui.time_premium.setChecked(self.bc.get('time', 'premium'))
+        self.ui.time_agg.setCurrentIndex(self.bc.get('time', 'agg'))
 
-        self.ui.reviewed_slug.setText(self.mw.col.conf[BEE]['reviewed']['slug'])
-        self.ui.reviewed_enabled.setChecked(self.mw.col.conf[BEE]['reviewed']['enabled'])
-        self.ui.reviewed_premium.setChecked(self.mw.col.conf[BEE]['reviewed']['premium'])
-        self.ui.reviewed_agg.setCurrentIndex(self.mw.col.conf[BEE]['reviewed']['agg'])
+        self.ui.reviewed_slug.setText(self.bc.get('reviewed', 'slug'))
+        self.ui.reviewed_enabled.setChecked(self.bc.get('reviewed', 'enabled'))
+        self.ui.reviewed_premium.setChecked(self.bc.get('reviewed', 'premium'))
+        self.ui.reviewed_agg.setCurrentIndex(self.bc.get('reviewed', 'agg'))
 
-        self.ui.added_slug.setText(self.mw.col.conf[BEE]['added']['slug'])
-        self.ui.added_enabled.setChecked(self.mw.col.conf[BEE]['added']['enabled'])
-        self.ui.added_premium.setChecked(self.mw.col.conf[BEE]['added']['premium'])
-        self.ui.added_agg.setCurrentIndex(self.mw.col.conf[BEE]['added']['agg'])
+        self.ui.added_slug.setText(self.bc.get('added', 'slug'))
+        self.ui.added_enabled.setChecked(self.bc.get('added', 'enabled'))
+        self.ui.added_premium.setChecked(self.bc.get('added', 'premium'))
+        self.ui.added_agg.setCurrentIndex(self.bc.get('added', 'agg'))
 
-        self.ui.due_slug.setText(self.mw.col.conf[BEE]['due']['slug'])
-        self.ui.due_enabled.setChecked(self.mw.col.conf[BEE]['due']['enabled'])
-        self.ui.due_agg.setCurrentIndex(self.mw.col.conf[BEE]['due']['agg'])
+        self.ui.due_slug.setText(self.bc.get('due', 'slug'))
+        self.ui.due_enabled.setChecked(self.bc.get('due', 'enabled'))
+        self.ui.due_agg.setCurrentIndex(self.bc.get('due', 'agg'))
 
         self.parent = parent
         self.show()
@@ -57,43 +60,46 @@ class BeeminderSettings(QDialog):
         self.close()
 
     def onApply(self):
-        self.mw.col.conf[BEE]['username'] = self.ui.username.text()
-        self.mw.col.conf[BEE]['token'] = self.ui.token.text()
-        self.mw.col.conf[BEE]['enabled'] = self.ui.enabled.isChecked()
-        self.mw.col.conf[BEE]['shutdown'] = self.ui.shutdown.isChecked()
-        self.mw.col.conf[BEE]['ankiweb'] = self.ui.ankiweb.isChecked()
+        self.bc.tset('username', self.ui.username.text())
+        self.bc.tset('token', self.ui.token.text())
+        self.bc.tset('enabled', self.ui.enabled.isChecked())
+        self.bc.tset('shutdown', self.ui.shutdown.isChecked())
+        self.bc.tset('ankiweb', self.ui.ankiweb.isChecked())
 
-        self.mw.col.conf[BEE]['time']['units'] = self.ui.time_units.currentIndex()
-        self.mw.col.conf[BEE]['added']['type'] = self.ui.added_type.currentIndex()
+        self.bc.set('time', 'units', self.ui.time_units.currentIndex())
+        self.bc.set('added', 'type', self.ui.added_type.currentIndex())
 
-        self.mw.col.conf[BEE]['time']['slug'] = self.ui.time_slug.text()
-        self.mw.col.conf[BEE]['time']['enabled'] = self.ui.time_enabled.isChecked()
-        self.mw.col.conf[BEE]['time']['premium'] = self.ui.time_premium.isChecked()
-        self.mw.col.conf[BEE]['time']['agg'] = self.ui.time_agg.currentIndex()
+        self.bc.set('time', 'slug', self.ui.time_slug.text())
+        self.bc.set('time', 'enabled', self.ui.time_enabled.isChecked())
+        self.bc.set('time', 'premium', self.ui.time_premium.isChecked())
+        self.bc.set('time', 'agg', self.ui.time_agg.currentIndex())
 
-        self.mw.col.conf[BEE]['time']['overwrite'] = self.setOverwrite(self.mw.col.conf[BEE]['time']['premium'],
-                                                                       self.mw.col.conf[BEE]['time']['agg'])
+        self.bc.set('time', 'overwrite',
+                self.setOverwrite(self.bc.get('time', 'premium'),
+                    self.bc.get('time', 'agg')))
 
-        self.mw.col.conf[BEE]['reviewed']['slug'] = self.ui.reviewed_slug.text()
-        self.mw.col.conf[BEE]['reviewed']['enabled'] = self.ui.reviewed_enabled.isChecked()
-        self.mw.col.conf[BEE]['reviewed']['premium'] = self.ui.reviewed_premium.isChecked()
-        self.mw.col.conf[BEE]['reviewed']['agg'] = self.ui.reviewed_agg.currentIndex()
-        self.mw.col.conf[BEE]['reviewed']['overwrite'] = self.setOverwrite(self.mw.col.conf[BEE]['reviewed']['premium'],
-                                                                           self.mw.col.conf[BEE]['reviewed']['agg'])
+        self.bc.set('reviewed', 'slug', self.ui.reviewed_slug.text())
+        self.bc.set('reviewed', 'enabled', self.ui.reviewed_enabled.isChecked())
+        self.bc.set('reviewed', 'premium', self.ui.reviewed_premium.isChecked())
+        self.bc.set('reviewed', 'agg', self.ui.reviewed_agg.currentIndex())
+        self.bc.set('reviewed', 'overwrite',
+            self.setOverwrite(self.bc.get('reviewed', 'premium'),
+                self.bc.get('reviewed', 'agg')))
 
-        self.mw.col.conf[BEE]['added']['slug'] = self.ui.added_slug.text()
-        self.mw.col.conf[BEE]['added']['enabled'] = self.ui.added_enabled.isChecked()
-        self.mw.col.conf[BEE]['added']['premium'] = self.ui.added_premium.isChecked()
-        self.mw.col.conf[BEE]['added']['agg'] = self.ui.added_agg.currentIndex()
-        self.mw.col.conf[BEE]['added']['overwrite'] = self.setOverwrite(self.mw.col.conf[BEE]['added']['premium'],
-                                                                        self.mw.col.conf[BEE]['added']['agg'])
+        self.bc.set('added', 'slug', self.ui.added_slug.text())
+        self.bc.set('added', 'enabled', self.ui.added_enabled.isChecked())
+        self.bc.set('added', 'premium', self.ui.added_premium.isChecked())
+        self.bc.set('added', 'agg', self.ui.added_agg.currentIndex())
+        self.bc.set('added', 'overwrite',
+            self.setOverwrite(self.bc.get('added', 'premium'),
+                self.bc.get('added', 'agg')))
 
-        self.mw.col.conf[BEE]['due']['slug'] = self.ui.due_slug.text()
-        self.mw.col.conf[BEE]['due']['enabled'] = self.ui.due_enabled.isChecked()
-        self.mw.col.conf[BEE]['due']['agg'] = self.ui.due_agg.currentIndex()
-        self.mw.col.conf[BEE]['due']['overwrite'] = self.mw.col.conf[BEE]['due']['agg'] is 0
+        self.bc.set('due', 'slug', self.ui.due_slug.text())
+        self.bc.set('due', 'enabled', self.ui.due_enabled.isChecked())
+        self.bc.set('due', 'agg', self.ui.due_agg.currentIndex())
+        self.bc.set('due', 'overwrite', self.bc.get('due', 'agg') is 0)
 
-        self.mw.col.setMod()
+        self.bc.store()
 
     def setOverwrite(self, premium, agg):
         return not premium or (premium and agg is 0)

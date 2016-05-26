@@ -8,10 +8,11 @@ def getDataPointId(col, goal_type, timestamp):
     to save the new ID and dayStamp.
     Disregard mention of the second item in the tuple.
     """
-    from sync import BEE
-    if col.conf[BEE][goal_type]['overwrite'] and \
-       col.conf[BEE][goal_type]['lastupload'] == getDayStamp(timestamp):
-        return col.conf[BEE][goal_type]['did']
+    from config import beeconf
+    bc = beeconf()
+    if bc.get(goal_type, 'overwrite') and \
+            bc.get(goal_type, 'lastupload') == getDayStamp(timestamp):
+        return bc.get(goal_type, 'did')
     else:
         return None
 

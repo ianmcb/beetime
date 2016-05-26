@@ -1,10 +1,10 @@
 BEE = 'bee_conf' # name of key in anki configuration dict
 
-from aqt import mw, progress
-
-from util import getDayStamp
 from api import getApi, sendApi
 from lookup import *
+from util import getDayStamp
+
+from aqt import mw, progress
 
 import datetime, time
 
@@ -13,13 +13,16 @@ def syncDispatch(col=None, at=None):
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
+    from config import beeconf
     col = col or mw.col
     if col is None:
         return
 
-    if at == 'shutdown' and not col.conf[BEE]['shutdown'] or \
-            at == 'ankiweb' and not col.conf[BEE]['ankiweb'] or \
-            not col.conf[BEE]['enabled']:
+    bc = beeconf()
+
+    if at == 'shutdown' and not bc.tget('shutdown') or \
+            at == 'ankiweb' and not bc.tget('ankiweb') or \
+            not bc.tget('enabled'):
         return
 
     mw.progress.start(immediate=True)
@@ -45,7 +48,7 @@ def syncDispatch(col=None, at=None):
         if isEnabled('time'):
             # convert seconds to hours (units is 0) or minutes (units is 1)
             # keep seconds if units is 2
-            units = col.conf[BEE]['time']['units']
+            units = bc.get('time', 'units')
             if units is 0:
                 reviewTime /= 60.0 * 60.0
             elif units is 1:
@@ -58,7 +61,7 @@ def syncDispatch(col=None, at=None):
             prepareApiCall(col, reportTimestamp, numberOfCards, comment, goal_type='reviewed')
 
     if isEnabled('added'):
-        added = ["cards", "notes"][col.conf[BEE]['added']['type']]
+        added = ["cards", "notes"][bc.get('added', 'type')]
         numberAdded = lookupAdded(col, added)
         # report number of cards or notes added
         prepareApiCall(col, reportTimestamp, numberAdded,
@@ -78,9 +81,12 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
-    user = col.conf[BEE]['username']
-    token = col.conf[BEE]['token']
-    slug = col.conf[BEE][goal_type]['slug']
+    from config import beeconf
+    bc = beeconf()
+
+    user = bc.tget('username')
+    token = bc.tget('token')
+    slug = bc.get(goal_type, 'slug')
     data = {
         "timestamp": timestamp,
         "value": value,
@@ -90,9 +96,11 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
     cachedDatapointId = getDataPointId(col, goal_type, timestamp)
 
     newDatapointId = sendApi(user, token, slug, data, cachedDatapointId)
-    col.conf[BEE][goal_type]['lastupload'] = getDayStamp(timestamp)
-    col.conf[BEE][goal_type]['did'] = newDatapointId
+    bc.set(goal_type, 'lastupload', getDayStamp(timestamp))
+    bc.set(goal_type, 'did', newDatapointId)
+    bc.store()
     col.setMod()
 
 def isEnabled(goal):
-    return mw.col.conf[BEE][goal]['enabled']
+    from config import beeconf
+    return beeconf().get(goal, 'enabled')
