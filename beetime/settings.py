@@ -32,19 +32,15 @@ class BeeminderSettings(QDialog):
 
         self.ui.time_slug.setText(self.bc.get('time', 'slug'))
         self.ui.time_enabled.setChecked(self.bc.get('time', 'enabled'))
-        self.ui.time_agg.setCurrentIndex(self.bc.get('time', 'agg'))
 
         self.ui.reviewed_slug.setText(self.bc.get('reviewed', 'slug'))
         self.ui.reviewed_enabled.setChecked(self.bc.get('reviewed', 'enabled'))
-        self.ui.reviewed_agg.setCurrentIndex(self.bc.get('reviewed', 'agg'))
 
         self.ui.added_slug.setText(self.bc.get('added', 'slug'))
         self.ui.added_enabled.setChecked(self.bc.get('added', 'enabled'))
-        self.ui.added_agg.setCurrentIndex(self.bc.get('added', 'agg'))
 
         self.ui.due_slug.setText(self.bc.get('due', 'slug'))
         self.ui.due_enabled.setChecked(self.bc.get('due', 'enabled'))
-        self.ui.due_agg.setCurrentIndex(self.bc.get('due', 'agg'))
 
         self.parent = parent
         self.show()
@@ -68,22 +64,18 @@ class BeeminderSettings(QDialog):
 
         self.bc.set('time', 'slug', self.ui.time_slug.text())
         self.bc.set('time', 'enabled', self.ui.time_enabled.isChecked())
-        self.bc.set('time', 'agg', self.ui.time_agg.currentIndex())
-        self.bc.set('time', 'overwrite', self.bc.get('time', 'agg') is 0)
+        self.bc.set('time', 'overwrite', self.ui.time_overwrite.isChecked())
 
         self.bc.set('reviewed', 'slug', self.ui.reviewed_slug.text())
         self.bc.set('reviewed', 'enabled', self.ui.reviewed_enabled.isChecked())
-        self.bc.set('reviewed', 'agg', self.ui.reviewed_agg.currentIndex())
-        self.bc.set('reviewed', 'overwrite', self.bc.get('reviewed', 'agg') is 0)
+        self.bc.set('reviewed', 'overwrite', self.ui.reviewed_overwrite.isChecked())
 
         self.bc.set('added', 'slug', self.ui.added_slug.text())
         self.bc.set('added', 'enabled', self.ui.added_enabled.isChecked())
-        self.bc.set('added', 'agg', self.ui.added_agg.currentIndex())
-        self.bc.set('added', 'overwrite', self.bc.get('added', 'agg') is 0)
+        self.bc.set('added', 'overwrite', self.ui.added_overwrite.isChecked())
 
         self.bc.set('due', 'slug', self.ui.due_slug.text())
         self.bc.set('due', 'enabled', self.ui.due_enabled.isChecked())
-        self.bc.set('due', 'agg', self.ui.due_agg.currentIndex())
-        self.bc.set('due', 'overwrite', self.bc.get('due', 'agg') is 0)
+        self.bc.set('due', 'overwrite', self.ui.due_overwrite.isChecked())
 
         self.bc.store()

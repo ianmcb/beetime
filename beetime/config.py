@@ -94,30 +94,26 @@ class beeconf():
                 "did": None,
                 "lastupload": None,
                 "units": 0,
-                "overwrite": True,
-                "agg": 0}
+                "overwrite": True}
         self.added_default = {
                 "enabled": False,
                 "slug": "",
                 "did": None,
                 "type": 0,
                 "lastupload": None,
-                "overwrite": True,
-                "agg": 0}
+                "overwrite": True}
         self.reviewed_default = {
                 "enabled": False,
                 "slug": "",
                 "did": None,
                 "lastupload": None,
-                "overwrite": True,
-                "agg": 0}
+                "overwrite": True}
         self.due_default = {
                 "enabled": False,
                 "slug": "",
                 "did": None,
                 "lastupload": None,
-                "overwrite": True,
-                "agg": 0}
+                "overwrite": True}
         self.default = {
                 "username": "",
                 "token": "",
