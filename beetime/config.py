@@ -128,7 +128,7 @@ class beeconf():
                 "added": self.added_default,
                 "reviewed": self.reviewed_default,
                 "due": self.due_default,
-                "version": "v1.7"}
+                "version": "v1.7rc2"}
 
     def upgrade(self):
         pass
