@@ -27,7 +27,43 @@ class BeeminderSettings(QDialog):
         self.connect(self.ui.buttonBox.button(QtGui.QDialogButtonBox.Reset), SIGNAL("clicked()"), self.onReset)
 
     def onHelp(self):
-        pass
+        from PyQt4 import QtCore
+
+        self.helpDialog = QtGui.QDialog(self.mw)
+        self.helpTextBrowser = QtGui.QTextBrowser(self.helpDialog)
+        self.helpTextBrowser.setGeometry(QtCore.QRect(0, 0, 480, 600))
+        self.helpTextBrowser.setOpenExternalLinks(True)
+        self.helpTextBrowser.setReadOnly(True)
+        helpText="""
+<h2>Sync after synchronizing with AnkiWeb</h2>
+This button is currently not wired up.  Please complain if you'd like to see this done.
+
+<h2>Multiple goals</h2>
+It's possible to sync to different and multiple goals, but also possible to send several metrics to the same goal.
+
+<h2>Sync number of additions</h2>
+You can select either the number of added cards or added notes to get reported to Beeminder.
+A single note can result in multiple cards being added, so it might make sense to e.g. Beemind the number of notes added if you want your goal to reflect the effort spent creating new content.
+Alternatively, you could Beemind the amount of cards added to keep those <b>below</b> a certain threshold!
+
+<h2>Use a single datapoint per day</h2>
+This setting is related to the aggregation setting Beeminder-side.
+If you're a non-premium user, the default (unchangeable) aggregation setting is "sum", meaning all datapoints are summed.
+This means the add-on has to keep updating a single datapoint for each day.
+
+If you are a premium Beeminder user, you can request the add-on to keep sending new datapoints.
+This probably only makes sense with the premium aggregation settings such as "last" or "max."
+
+<h2>Contributing</h2>
+Please report bugs or feature requests over <a href="http://forum.beeminder.COM/t/announcing-beeminder-for-anki/2206">on this thread on the Beeminder forum</a> or help out <a href="https://github.com/ianmcb/beetime/">on GitHub</a>.
+"""
+        self.helpTextBrowser.setHtml(helpText)
+        self.helpDialog.setMinimumWidth(480)
+        self.helpDialog.setMaximumWidth(480)
+        self.helpDialog.setMinimumHeight(600)
+        self.helpDialog.setMaximumHeight(600)
+        self.helpDialog.resize(480, 600)
+        self.helpDialog.show()
 
     def onReset(self):
         if askUser("Resetting while clear all your settings. Continue?", defaultno=True):
