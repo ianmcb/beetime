@@ -61,6 +61,10 @@ class beeconf():
 
     def nuke(self):
         if BEE in self.mw.col.conf:
+            from pprint import pprint as pp
+            print("Sorry, your configuration is outdated, starting over.")
+            print("For reference, here are your old settings:")
+            pp(self.mw.col.conf[BEE])
             del self.mw.col.conf[BEE]
             self.create()
 
