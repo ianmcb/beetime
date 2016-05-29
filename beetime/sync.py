@@ -98,11 +98,12 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
         "comment": comment,
         "auth_token": token}
 
-    cachedDatapointId = getDataPointId(col, goal_type, timestamp)
+    outgoingId = getDataPointId(col, goal_type, daystamp, value)
 
-    newDatapointId = sendApi(user, token, slug, data, cachedDatapointId)
-    bc.set(goal_type, 'lastupload', getDayStamp(timestamp))
-    bc.set(goal_type, 'did', newDatapointId)
+    incomingID = sendApi(user, token, slug, data, outgoingId)
+    bc.set(goal_type, 'lastupload', daystamp)
+    bc.set(goal_type, 'did', incomingID)
+    bc.set(goal_type, 'val', value)
     bc.store()
 
 def isEnabled(goal):

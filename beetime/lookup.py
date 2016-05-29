@@ -4,9 +4,16 @@ def getDataPointId(col, goal_type, daystamp, val):
     """
     from config import beeconf
     bc = beeconf()
+    # return datapoint ID if overwrite is set
     if bc.get(goal_type, 'overwrite') and \
             bc.get(goal_type, 'lastupload') == daystamp:
         return bc.get(goal_type, 'did')
+    # also return the ID if the last uploaded value is equal to the current one
+    elif not bc.get(goal_type, 'overwrite') and \
+            bc.get(goal_type, 'lastupload') == daystamp and \
+            bc.get(goal_type, 'val') == val:
+        return bc.get(goal_type, 'did')
+    # otherwise create a new one
     else:
         return None
 
