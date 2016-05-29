@@ -1,7 +1,7 @@
 from settings import BeeminderSettings
 from sync import syncDispatch
 
-from anki.hooks import addHook
+from anki.hooks import addHook, wrap
 
 from aqt import mw
 from aqt.qt import QAction, SIGNAL
@@ -28,3 +28,10 @@ mw.form.menuTools.addAction(manualSync)
 # sync at shutdown hook
 # ---------------------
 addHook("unloadProfile", lambda: syncDispatch(at='shutdown'))
+
+# sync after ankiweb wrap
+# -----------------------
+def ankiwebSync(auto=False, reload=True):
+    syncDispatch(at='ankiweb')
+
+mw.onSync = wrap(mw.onSync, ankiwebSync, 'after')

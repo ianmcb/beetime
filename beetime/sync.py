@@ -1,5 +1,3 @@
-BEE = 'bee_conf' # name of key in anki configuration dict
-
 from api import getApi, sendApi
 from lookup import *
 from util import getDayStamp
@@ -16,13 +14,19 @@ def syncDispatch(col=None, at=None):
     from config import beeconf
     col = col or mw.col
     if col is None:
+        # necessary for syncing along with ankiweb at shutdown, because
+        # it has called unloadCollection()
+        mw.loadCollection()
+        col = col or mw.col
+
+    if col is None:
         return
 
     bc = beeconf()
 
-    if at == 'shutdown' and not bc.tget('shutdown') or \
-            at == 'ankiweb' and not bc.tget('ankiweb') or \
-            not bc.tget('enabled'):
+    if not bc.tget('enabled') or \
+            (at == 'shutdown' and not bc.tget('shutdown')) or \
+            (at == 'ankiweb' and not bc.tget('ankiweb')):
         return
 
     mw.progress.start(immediate=True)
@@ -99,7 +103,6 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
     bc.set(goal_type, 'lastupload', getDayStamp(timestamp))
     bc.set(goal_type, 'did', newDatapointId)
     bc.store()
-    col.setMod()
 
 def isEnabled(goal):
     from config import beeconf

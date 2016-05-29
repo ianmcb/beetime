@@ -1,6 +1,6 @@
 from aqt import mw
 
-from sync import BEE
+BEE = 'bee_conf' # name of key in anki configuration dict
 
 class beeconf():
     """Lookup the configuration, save it to the database when it gets
@@ -21,6 +21,7 @@ class beeconf():
 
     def save(self):
         self.mw.col.setMod()
+        self.mw.col.save()
 
     def clobber(self):
         if BEE in self.mw.col.conf:
