@@ -1,17 +1,11 @@
-from util import getDayStamp
-
-def getDataPointId(col, goal_type, timestamp):
-    """ Compare the cached dayStamp with the current one, return
-    a tuple with as the first item the cached datapoint ID if
-    the dayStamps match, otherwise None; the second item is
-    a boolean indicating whether they match (and thus if we need
-    to save the new ID and dayStamp.
-    Disregard mention of the second item in the tuple.
+def getDataPointId(col, goal_type, daystamp, val):
+    """Compare the cached dayStamp with the current one, return
+    the cached datapoint ID if the daystamps match, otherwise None.
     """
     from config import beeconf
     bc = beeconf()
     if bc.get(goal_type, 'overwrite') and \
-            bc.get(goal_type, 'lastupload') == getDayStamp(timestamp):
+            bc.get(goal_type, 'lastupload') == daystamp:
         return bc.get(goal_type, 'did')
     else:
         return None

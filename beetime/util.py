@@ -1,5 +1,5 @@
 import datetime
 
-def getDayStamp(timestamp):
+def getDaystamp(timestamp):
     """ Converts a Unix timestamp to a Ymd string."""
-    return datetime.date.fromtimestamp(timestamp).strftime('%Y%m%d')
+    return datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
