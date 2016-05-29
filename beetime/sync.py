@@ -74,7 +74,7 @@ def syncDispatch(col=None, at=None):
     if isEnabled('due'):
         numberDue = lookupDue(col)
         comment = ("no more cards " if numberDue is 0 else "still %d card%s " % (numberDue, "" if numberDue is 1 else "s")) + \
-                "due at %02d:%02d" % (now.hour, now.minute)
+                "due at %02d:%02d:%02d" % (now.hour, now.minute, now.second)
         # report number of cards due
         prepareApiCall(col, reportTimestamp, numberDue, comment, goal_type='due')
 
