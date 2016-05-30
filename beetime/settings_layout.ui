@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>539</width>
-    <height>520</height>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>10</x>
      <y>10</y>
      <width>521</width>
-     <height>501</height>
+     <height>541</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="top_gridLayout">
@@ -47,11 +47,11 @@
          <x>10</x>
          <y>30</y>
          <width>461</width>
-         <height>118</height>
+         <height>174</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="general_gridLayout">
-        <item row="2" column="0">
+        <item row="3" column="0">
          <widget class="QCheckBox" name="shutdown">
           <property name="enabled">
            <bool>true</bool>
@@ -84,10 +84,24 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="4" column="0">
          <widget class="QCheckBox" name="ankiweb">
           <property name="text">
            <string>Sync after synchronizing with AnkiWeb</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="startup">
+          <property name="text">
+           <string>Sync at startup</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QCheckBox" name="odo">
+          <property name="text">
+           <string>Report review totals</string>
           </property>
          </widget>
         </item>
@@ -97,13 +111,13 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>160</y>
+         <y>210</y>
          <width>501</width>
-         <height>301</height>
+         <height>291</height>
         </rect>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="time_page">
         <property name="geometry">
@@ -111,7 +125,7 @@
           <x>0</x>
           <y>0</y>
           <width>501</width>
-          <height>177</height>
+          <height>167</height>
          </rect>
         </property>
         <attribute name="label">
@@ -123,7 +137,7 @@
            <x>10</x>
            <y>0</y>
            <width>491</width>
-           <height>191</height>
+           <height>161</height>
           </rect>
          </property>
          <property name="title">
@@ -138,7 +152,7 @@
             <x>20</x>
             <y>20</y>
             <width>431</width>
-            <height>152</height>
+            <height>131</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -208,7 +222,7 @@
           <x>0</x>
           <y>0</y>
           <width>501</width>
-          <height>177</height>
+          <height>167</height>
          </rect>
         </property>
         <attribute name="label">
@@ -220,7 +234,7 @@
            <x>10</x>
            <y>0</y>
            <width>491</width>
-           <height>181</height>
+           <height>161</height>
           </rect>
          </property>
          <property name="title">
@@ -235,7 +249,7 @@
             <x>20</x>
             <y>20</y>
             <width>431</width>
-            <height>131</height>
+            <height>101</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -279,7 +293,7 @@
           <x>0</x>
           <y>0</y>
           <width>501</width>
-          <height>177</height>
+          <height>167</height>
          </rect>
         </property>
         <attribute name="label">
@@ -291,7 +305,7 @@
            <x>10</x>
            <y>0</y>
            <width>491</width>
-           <height>171</height>
+           <height>161</height>
           </rect>
          </property>
          <property name="title">
@@ -306,7 +320,7 @@
             <x>20</x>
             <y>20</y>
             <width>431</width>
-            <height>152</height>
+            <height>131</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -341,7 +355,7 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="0">
+           <item row="8" column="0">
             <spacer name="verticalSpacer_4">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -354,10 +368,17 @@
              </property>
             </spacer>
            </item>
-           <item row="5" column="0">
+           <item row="6" column="0">
             <widget class="QCheckBox" name="added_overwrite">
              <property name="text">
               <string>Use a single datapoint per day</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QCheckBox" name="added_odo">
+             <property name="text">
+              <string>Report totals</string>
              </property>
             </widget>
            </item>
@@ -371,7 +392,7 @@
           <x>0</x>
           <y>0</y>
           <width>501</width>
-          <height>177</height>
+          <height>167</height>
          </rect>
         </property>
         <attribute name="label">
@@ -383,7 +404,7 @@
            <x>10</x>
            <y>0</y>
            <width>491</width>
-           <height>161</height>
+           <height>151</height>
           </rect>
          </property>
          <property name="title">
@@ -398,7 +419,7 @@
             <x>20</x>
             <y>20</y>
             <width>431</width>
-            <height>131</height>
+            <height>101</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_6">

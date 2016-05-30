@@ -45,7 +45,7 @@ def syncDispatch(col=None, at=None):
     reportTimestamp = time.mktime(reportTime.timetuple())
 
     if isEnabled('time') or isEnabled('reviewed'):
-        numberOfCards, reviewTime = lookupReviewed(col)
+        numberOfCards, reviewTime = lookupReviewed(col, odo = bc.tget('odo'))
         comment = formatComment(numberOfCards, reviewTime)
 
         if isEnabled('time'):
@@ -65,7 +65,7 @@ def syncDispatch(col=None, at=None):
 
     if isEnabled('added'):
         added = ["cards", "notes"][bc.get('added', 'type')]
-        numberAdded = lookupAdded(col, added)
+        numberAdded = lookupAdded(col, added, odo = bc.get('added', 'odo'))
         # report number of cards or notes added
         prepareApiCall(col, reportTimestamp, numberAdded,
                 "added %d %s" % (numberAdded, added), goal_type='added')

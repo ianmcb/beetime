@@ -96,6 +96,7 @@ class beeconf():
                 "did": None,
                 "type": 0,
                 "lastupload": None,
+                "odo": False,
                 "overwrite": True}
         self.reviewed_default = {
                 "enabled": False,
@@ -116,6 +117,7 @@ class beeconf():
                 "startup": False,
                 "shutdown": False,
                 "ankiweb": False,
+                "odo": False,
                 "time": self.time_default,
                 "added": self.added_default,
                 "reviewed": self.reviewed_default,

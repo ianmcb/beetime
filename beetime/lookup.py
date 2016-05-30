@@ -25,9 +25,14 @@ def formatComment(numberOfCards, reviewTime):
             b=fmtTimeSpan(reviewTime, unit=1))
     return comment
 
-def lookupReviewed(col):
+def lookupReviewed(col, odo = False):
     """Lookup the number of cards reviewed and the time spent reviewing them."""
-    cardsReviewed, reviewTime = col.db.first("""
+    if odo:
+        cardsReviewed, reviewTime = col.db.first("""
+select count(), sum(time)/1000 from revlog
+where id < ?""", (col.sched.dayCutoff) * 1000)
+    else:
+        cardsReviewed, reviewTime = col.db.first("""
 select count(), sum(time)/1000 from revlog
 where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
 
@@ -36,8 +41,11 @@ where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
 
     return (cardsReviewed, reviewTime)
 
-def lookupAdded(col, added='cards'):
-    cardsAdded = col.db.scalar("select count() from %s where id > %d" % (added, (col.sched.dayCutoff - 86400) * 1000))
+def lookupAdded(col, added='cards', odo = False):
+    if odo:
+        cardsAdded = col.db.scalar("select count() from %s where id < %d" % (added, col.sched.dayCutoff * 1000))
+    else:
+        cardsAdded = col.db.scalar("select count() from %s where id > %d" % (added, (col.sched.dayCutoff - 86400) * 1000))
     return cardsAdded
 
 def lookupDue(col):
