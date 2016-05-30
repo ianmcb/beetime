@@ -25,6 +25,10 @@ manualSync = QAction("Sync with Beeminder", mw)
 mw.connect(manualSync, SIGNAL("triggered()"), lambda: syncDispatch(at='manual'))
 mw.form.menuTools.addAction(manualSync)
 
+# sync at startup hook
+# --------------------
+addHook("profileLoaded", lambda: syncDispatch(at='startup'))
+
 # sync at shutdown hook
 # ---------------------
 addHook("unloadProfile", lambda: syncDispatch(at='shutdown'))

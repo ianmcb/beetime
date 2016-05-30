@@ -25,6 +25,7 @@ def syncDispatch(col=None, at=None):
     bc = mw.bc = beeconf(col)
 
     if not bc.tget('enabled') or \
+            (at == 'startup' and not bc.tget('startup')) or \
             (at == 'shutdown' and not bc.tget('shutdown')) or \
             (at == 'ankiweb' and not bc.tget('ankiweb')):
         return

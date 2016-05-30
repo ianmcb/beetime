@@ -73,18 +73,14 @@ class beeconf():
                 not "reviewed" in self.bee or \
                 not "time" in self.bee:
             self.nuke()
-            print("Enabled added & reviewed goals.")
         else:
             # for users upgrading from v1.6
             if self.get('added', 'type') == "cards":
-                self.set('added', 'type', 0, store=True)
-                print("Hotfix v1.6.1")
+                self.nuke()
 
-            # for users upgrading from v1.6.1
-            if not "due" in self.bee:
-                self.default()
-                self.tset('due', self.due_default, store=True)
-                print("Enabled due goals.")
+        # for users upgrading from v1.6.1
+        if not "startup" in self.bee:
+            self.nuke()
 
     def default(self):
         self.time_default = {
@@ -117,6 +113,7 @@ class beeconf():
                 "username": "",
                 "token": "",
                 "enabled": True,
+                "startup": False,
                 "shutdown": False,
                 "ankiweb": False,
                 "time": self.time_default,

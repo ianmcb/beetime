@@ -72,6 +72,7 @@ Please report bugs or feature requests over <a href="http://forum.beeminder.COM/
         self.ui.username.setText(self.bc.tget('username'))
         self.ui.token.setText(self.bc.tget('token'))
         self.ui.enabled.setChecked(self.bc.tget('enabled'))
+        self.ui.startup.setChecked(self.bc.tget('startup'))
         self.ui.shutdown.setChecked(self.bc.tget('shutdown'))
         self.ui.ankiweb.setChecked(self.bc.tget('ankiweb'))
 
@@ -106,6 +107,7 @@ Please report bugs or feature requests over <a href="http://forum.beeminder.COM/
         self.bc.tset('username', self.ui.username.text())
         self.bc.tset('token', self.ui.token.text())
         self.bc.tset('enabled', self.ui.enabled.isChecked())
+        self.bc.tset('startup', self.ui.startup.isChecked())
         self.bc.tset('shutdown', self.ui.shutdown.isChecked())
         self.bc.tset('ankiweb', self.ui.ankiweb.isChecked())
 
