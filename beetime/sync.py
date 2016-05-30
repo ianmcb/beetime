@@ -1,7 +1,7 @@
 from api import getApi, sendApi
 from config import beeconf
 from lookup import *
-from util import getDaystamp
+from util import *
 
 from aqt import mw, progress
 
@@ -47,7 +47,6 @@ def syncDispatch(col=None, at=None):
     if isEnabled('time') or isEnabled('reviewed'):
         numberOfCards, reviewTime = lookupReviewed(col, odo = bc.tget('odo'))
         comment = formatComment(numberOfCards, reviewTime)
-
         if isEnabled('time'):
             # convert seconds to hours (units is 0) or minutes (units is 1)
             # keep seconds if units is 2
@@ -57,23 +56,24 @@ def syncDispatch(col=None, at=None):
             elif units is 1:
                 reviewTime /= 60.0
             # report time spent reviewing
-            prepareApiCall(col, reportTimestamp, reviewTime, comment)
+            prepareApiCall(col, reportTimestamp, reviewTime, timestampComment(comment, now, bc.get('time', 'overwrite')))
 
         if isEnabled('reviewed'):
             # report number of cards reviewed
-            prepareApiCall(col, reportTimestamp, numberOfCards, comment, goal_type='reviewed')
+            prepareApiCall(col, reportTimestamp, numberOfCards, timestampComment(comment, now, bc.get('reviewed', 'overwrite')), goal_type='reviewed')
 
     if isEnabled('added'):
         added = ["cards", "notes"][bc.get('added', 'type')]
         numberAdded = lookupAdded(col, added, odo = bc.get('added', 'odo'))
+        comment = "added %d %s" % (numberAdded, added)
+        comment = timestampComment(comment, now, bc.get('added', 'overwrite'))
         # report number of cards or notes added
-        prepareApiCall(col, reportTimestamp, numberAdded,
-                "added %d %s" % (numberAdded, added), goal_type='added')
+        prepareApiCall(col, reportTimestamp, numberAdded, comment, goal_type='added')
 
     if isEnabled('due'):
         numberDue = lookupDue(col)
-        comment = ("no more cards " if numberDue is 0 else "still %d card%s " % (numberDue, "" if numberDue is 1 else "s")) + \
-                "due at %02d:%02d:%02d" % (now.hour, now.minute, now.second)
+        comment = ("no more cards " if numberDue is 0 else "still %d card%s " % (numberDue, "" if numberDue is 1 else "s")) + "due"
+        comment = timestampComment(comment, now, bc.get('due', 'overwrite'))
         # report number of cards due
         prepareApiCall(col, reportTimestamp, numberDue, comment, goal_type='due')
 
