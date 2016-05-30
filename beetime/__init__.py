@@ -25,6 +25,12 @@ manualSync = QAction("Sync with Beeminder", mw)
 mw.connect(manualSync, SIGNAL("triggered()"), lambda: syncDispatch(at='manual'))
 mw.form.menuTools.addAction(manualSync)
 
+# only enable the menu item when the add-on is enabled
+def toggleManualSync():
+    BeeminderSettings().toggleManualSync()
+
+addHook("profileLoaded", toggleManualSync)
+
 # sync at startup hook
 # --------------------
 addHook("profileLoaded", lambda: syncDispatch(at='startup'))

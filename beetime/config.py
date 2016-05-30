@@ -113,7 +113,7 @@ class beeconf():
         self._default = {
                 "username": "",
                 "token": "",
-                "enabled": True,
+                "enabled": False,
                 "startup": False,
                 "shutdown": False,
                 "ankiweb": False,
@@ -123,6 +123,7 @@ class beeconf():
                 "reviewed": self.reviewed_default,
                 "due": self.due_default,
                 "version": "v1.7rc2"}
+
 
     def upgrade(self):
         pass
