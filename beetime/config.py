@@ -1,31 +1,29 @@
-from aqt import mw
-
 BEE = 'bee_conf' # name of key in anki configuration dict
 
 class beeconf():
     """Lookup the configuration, save it to the database when it gets
     modified and take care of upgrading."""
-    def __init__(self):
-        self.mw = mw
+    def __init__(self, col):
+        self.col = col
 
-        if not BEE in mw.col.conf:
+        if not BEE in self.col.conf:
             print("No %s entry yet." % BEE)
             self.create()
 
-        self.bee = self.mw.col.conf[BEE]
+        self.bee = self.col.conf[BEE]
         self.check()
 
     def store(self):
-        self.mw.col.conf[BEE] = self.bee
+        self.col.conf[BEE] = self.bee
         self.save()
 
     def save(self):
-        self.mw.col.setMod()
-        self.mw.col.save()
+        self.col.setMod()
+        self.col.save()
 
     def clobber(self):
-        if BEE in self.mw.col.conf:
-            self.bee = self.mw.col.conf[BEE]
+        if BEE in self.col.conf:
+            self.bee = self.col.conf[BEE]
             self.save()
 
     def tget(self, var):
@@ -61,12 +59,12 @@ class beeconf():
         self.store()
 
     def nuke(self):
-        if BEE in self.mw.col.conf:
+        if BEE in self.col.conf:
             from pprint import pprint as pp
             print("Sorry, your configuration is outdated, starting over.")
             print("For reference, here are your old settings:")
-            pp(self.mw.col.conf[BEE])
-            del self.mw.col.conf[BEE]
+            pp(self.col.conf[BEE])
+            del self.col.conf[BEE]
             self.create()
 
     def check(self):

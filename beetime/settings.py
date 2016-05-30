@@ -1,4 +1,3 @@
-from config import beeconf
 from settings_layout import Ui_BeeminderSettings
 
 from aqt import mw
@@ -16,7 +15,7 @@ class BeeminderSettings(QDialog):
         self.ui = Ui_BeeminderSettings()
         self.ui.setupUi(self)
 
-        self.bc = beeconf()
+        self.bc = self.mw.bc
 
         self.connect(self.ui.buttonBox, SIGNAL("rejected()"), self.onReject)
         self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)

@@ -1,4 +1,5 @@
 from api import getApi, sendApi
+from config import beeconf
 from lookup import *
 from util import getDaystamp
 
@@ -11,7 +12,6 @@ def syncDispatch(col=None, at=None):
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
-    from config import beeconf
     col = col or mw.col
     if col is None:
         # necessary for syncing along with ankiweb at shutdown, because
@@ -22,7 +22,7 @@ def syncDispatch(col=None, at=None):
     if col is None:
         return
 
-    bc = beeconf()
+    bc = mw.bc = beeconf(col)
 
     if not bc.tget('enabled') or \
             (at == 'shutdown' and not bc.tget('shutdown')) or \
@@ -83,8 +83,7 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
-    from config import beeconf
-    bc = beeconf()
+    bc = mw.bc
 
     daystamp = getDaystamp(timestamp)
 
@@ -98,7 +97,7 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
         "comment": comment,
         "auth_token": token}
 
-    outgoingId = getDataPointId(col, goal_type, daystamp, value)
+    outgoingId = getDataPointId(col, bc, goal_type, daystamp, value)
 
     incomingID = sendApi(user, token, slug, data, outgoingId)
     bc.set(goal_type, 'lastupload', daystamp)
@@ -107,5 +106,4 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
     bc.store()
 
 def isEnabled(goal):
-    from config import beeconf
-    return beeconf().get(goal, 'enabled')
+    return mw.bc.get(goal, 'enabled')
