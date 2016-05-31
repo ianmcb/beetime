@@ -145,6 +145,5 @@ Please report bugs or feature requests over <a href="http://forum.beeminder.COM/
         # were unsuccesful.
         for action in mw.form.menuTools.actions():
             if action.text() == 'Sync with Beeminder':
-                print "Toggled!"
                 action.setEnabled(self.bc.tget('enabled'))
                 break

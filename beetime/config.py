@@ -7,7 +7,6 @@ class beeconf():
         self.col = col
 
         if not BEE in self.col.conf:
-            print("No %s entry yet." % BEE)
             self.create()
 
         self.bee = self.col.conf[BEE]
