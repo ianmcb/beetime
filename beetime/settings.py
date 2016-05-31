@@ -49,17 +49,18 @@ If you're a non-premium user, the default (unchangeable) aggregation setting is 
 This means the add-on has to keep updating a single datapoint for each day.
 
 If you are a premium Beeminder user, you can request the add-on to keep sending new datapoints.
-This probably only makes sense with the premium aggregation settings such as "last" or "max."
+This probably only makes sense with the premium aggregation settings such as "last", "max", "min", or ... .
 
 <h2>Odometer style goals</h2>
-By default this add-on creates daily reports to Beeminder, e.g. it sends what you have done today or the status of your chosen metric on this day to Beeminder.
+By default this add-on creates daily reports to Beeminder; i.e. it sends what you have done today or the status of your chosen metric on this day to Beeminder.
 If you want to send the totals since you have started to use Anki, use the "Report totals" options.
-You can use some <a href="http://forum.beeminder.com/t/restarting-odometer-to-non-zero-value/299/17">Beeminder trickery</a> if you want to.
+You can use some <a href="http://forum.beeminder.com/t/restarting-odometer-to-non-zero-value/299/17">Beeminder trickery</a> to "reset" an Odometer goal if you'd like to start counting from the time you started using the add-on/Beeminder goal (as opposed to when you started using Anki).
+
 Reporting totals in this way allows you to miss a couple of days of uploading without losing data.
 E.g. if you did reviews for a couple of days on your mobile, but were unable to get access to a desktop to use this add-on and upload to Beeminder, you would not be able to get credit for the previous days if you used the default option.
 
 <h1>Goal types</h1>
-We are collecting your different uses of this add-on over <a src="http://forum.beeminder.COM/t/announcing-beeminder-for-anki/2206">on the Beeminder forum</a>. Come and share your workflow!
+We are collecting the different use cases of this add-on over <a href="http://forum.beeminder.COM/t/announcing-beeminder-for-anki/2206/15">on the Beeminder forum</a>. Please come and describe your own!
 
 <h2>Multiple goals</h2>
 It's possible to sync to different and multiple goals, but also possible to send several metrics to the same goal.
@@ -69,23 +70,23 @@ You can only toggle odometer style goals for these two in tandem, using the "Rep
 
 <h2>Sync number of additions</h2>
 You can select either the number of added cards or added notes to get reported to Beeminder.
-A single note can result in multiple cards being added, so it might make sense to e.g. Beemind the number of notes added if you want your goal to reflect the effort spent creating new content.
+A single note can result in multiple cards being added, so it might make sense to e.g. Beemind the number of notes added if you want your goal to more accurately reflect the effort spent creating new content.
 Alternatively, you could Beemind the amount of cards added to keep those <b>below</b> a certain threshold!
 
 <h2>Sync number of cards due</h2>
 Due to the nature of this goal type, you cannot set this to be an "odometer" style goal.
+
 Use this goal type for example to Whittle Down a backlog of reviews (start at a number X and have a negative slope to make sure your backlog goes down steadily). Adding or learning lots of new cards does not prevent you from using the goal in this manner, since Beeminder would force you to do all the reviews caused by learning new cards in addition to whittling down your backlog. You are responsible for choosing a reasonable goal slope.
 Or use it to keep your review load at a steady level, e.g. a flat slope at 50. Configure the add-on to upload at startup, so that by virtue of starting Anki you are now on the hook to do your reviews if the total number due were over 50.
 
 <h1>Contributing</h1>
-Please report bugs or feature requests over <a src="http://forum.beeminder.COM/t/announcing-beeminder-for-anki/2206">on this thread on the Beeminder forum</a> or help out <a src="https://github.com/ianmcb/beetime/">on GitHub</a>.
+Please report bugs or feature requests over <a href="http://forum.beeminder.COM/t/announcing-beeminder-for-anki/2206">on this thread on the Beeminder forum</a> or help out <a href="https://github.com/ianmcb/beetime/">on GitHub</a>.
 
 <h2>Known issues</h2>
 <ul>
-<li>The add-on doesn't try to fail gracefully in the case of no internet connection (or in any case really). This should not affect anything but you will get to see the error front and center.</li>
-<li>If you change the goalname in the add-on or if you delete a datapoint on the Beeminder website and you are using a "single datapoint per day", you may get a 404 error when trying to sync with Beeminder (because the add-on caches the datapoint, so it can re-use it, but it has become unavailable due to your changes of the settings). You can work around this by temporarily disabling the one datapoint per day setting <b>and</b> making sure the metric you are Beeminding has changed (e.g. you have done an extra review) before syncing with Beeminder manually. This should solve the issue. If it doesn't, you can still reset the settings which should definitely work.</li>
-</ul>
-"""
+<li>The add-on doesn't try to fail gracefully in the case of no internet connection (or in any case really). This should not affect anything but you will get to see the errors front and center if they happen.</li>
+<li>If you change the goalname in the add-on or if you delete a datapoint on the Beeminder website and you are using a "single datapoint per day", you may get a 404 error when trying to sync with Beeminder (because the add-on has cached the datapoint, so it can re-use it, but it has become unavailable due to your changes of the settings). You can work around this by temporarily disabling the one datapoint per day setting <b>and</b> making sure the metric you are Beeminding has changed (e.g. you have done an extra review) before syncing with Beeminder manually. This should solve the issue. If it doesn't, you can still reset the settings which should definitely work.</li>
+</ul>"""
         self.helpTextBrowser.setHtml(helpText)
         self.helpDialog.setMinimumWidth(480)
         self.helpDialog.setMaximumWidth(480)
