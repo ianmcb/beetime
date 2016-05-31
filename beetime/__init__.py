@@ -39,3 +39,15 @@ def ankiwebSync(auto=False, reload=True):
     syncDispatch(at='ankiweb')
 
 mw.onSync = wrap(mw.onSync, ankiwebSync, 'after')
+
+# click to sync button
+# --------------------
+from aqt.toolbar import Toolbar
+def toolbarRightIconsList(_old):
+    ret = _old()
+    new = ["newstats", "qrc:/icons/view-statistics.png",
+         _("Show New statistics. Shortcut key: %s") % "Shift+X"]
+    return ret + [new]
+
+mw.toolbar.link_handlers['newstats'] = mw.toolbar._statsLinkHandler
+mw.toolbar._rightIconsList = wrap(mw.toolbar._rightIconsList, toolbarRightIconsList, 'around')
