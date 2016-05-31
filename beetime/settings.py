@@ -169,14 +169,7 @@ Please report bugs or feature requests over <a href="http://forum.beeminder.COM/
 
         self.bc.store()
 
-        self.toggleManualSync()
+        self.toggleSync()
 
-    def toggleManualSync(self):
-        # hack to find the menu item or as it should be done?
-        # it would be nice to save the QAction somewhere, but my
-        # initial attempts to store it as a child of the mw object
-        # were unsuccesful.
-        for action in mw.form.menuTools.actions():
-            if action.text() == 'Sync with Beeminder':
-                action.setEnabled(self.bc.tget('enabled'))
-                break
+    def toggleSync(self):
+        mw.beetimeSync.setEnabled(self.bc.tget('enabled'))

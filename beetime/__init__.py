@@ -6,30 +6,24 @@ from anki.hooks import addHook, wrap
 from aqt import mw
 from aqt.qt import QAction, SIGNAL
 
-# settings menu item
-# ------------------
-dialog = None
-def openBeeminderSettings():
-    global dialog
-    if dialog is None:
-        dialog = BeeminderSettings()
-    dialog.display(mw)
+# menu items hook
+# ---------------
+def initBeetime():
+    if not hasattr(mw, 'beetimeSetup'):
+        mw.beetimeSetup = BeeminderSettings()
+    addMenuItems()
+    mw.beetimeSetup.toggleSync()
 
-openSettings = QAction("Setup Beeminder sync...", mw)
-mw.connect(openSettings, SIGNAL("triggered()"), openBeeminderSettings)
-mw.form.menuTools.addAction(openSettings)
+def addMenuItems():
+    mw.beetimeSetupItem = setupItem = QAction("Setup Beeminder sync...", mw)
+    mw.connect(setupItem, SIGNAL("triggered()"), lambda: mw.beetimeSetup.display(mw))
+    mw.form.menuTools.addAction(setupItem)
 
-# manual sync menu item
-# ---------------------
-manualSync = QAction("Sync with Beeminder", mw)
-mw.connect(manualSync, SIGNAL("triggered()"), lambda: syncDispatch(at='manual'))
-mw.form.menuTools.addAction(manualSync)
+    mw.beetimeSync = syncItem = QAction("Sync with Beeminder", mw)
+    mw.connect(syncItem, SIGNAL("triggered()"), lambda: syncDispatch(at='manual'))
+    mw.form.menuTools.addAction(syncItem)
 
-# only enable the menu item when the add-on is enabled
-def toggleManualSync():
-    BeeminderSettings().toggleManualSync()
-
-addHook("profileLoaded", toggleManualSync)
+addHook("profileLoaded", initBeetime)
 
 # sync at startup hook
 # --------------------
