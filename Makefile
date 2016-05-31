@@ -17,7 +17,7 @@ zip: $(base).zip
 $(base).zip: ui
 	touch "$@"
 	rm "$@"
-	zip "$@" "$(base).py" "$(module)"/*py
+	zip "$@" "$(base).py" "$(module)"/*py "$(module)"/beeminder.png
 	mv "$@" "$(base)-$(version).zip"
 
 

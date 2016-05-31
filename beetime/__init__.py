@@ -6,6 +6,8 @@ from anki.hooks import addHook, wrap
 from aqt import mw
 from aqt.qt import QAction, SIGNAL
 
+import os
+
 # menu items hook
 # ---------------
 def initBeetime():
@@ -43,11 +45,12 @@ mw.onSync = wrap(mw.onSync, ankiwebSync, 'after')
 # click to sync button
 # --------------------
 from aqt.toolbar import Toolbar
+
 def toolbarRightIconsList(_old):
     ret = _old()
-    new = ["newstats", "qrc:/icons/view-statistics.png",
-         _("Show New statistics. Shortcut key: %s") % "Shift+X"]
+    iconLocation = 'file://' + os.path.join(mw.pm.addonFolder(), 'beetime', 'beeminder.png')
+    new = ["beetime", iconLocation, _("Sync with Beeminder...")]
     return ret + [new]
 
-mw.toolbar.link_handlers['newstats'] = mw.toolbar._statsLinkHandler
+mw.toolbar.link_handlers['beetime'] = lambda: syncDispatch(at='manual')
 mw.toolbar._rightIconsList = wrap(mw.toolbar._rightIconsList, toolbarRightIconsList, 'around')
