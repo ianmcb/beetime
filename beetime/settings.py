@@ -32,16 +32,16 @@ class BeeminderSettings(QDialog):
         self.helpTextBrowser.setOpenExternalLinks(True)
         self.helpTextBrowser.setReadOnly(True)
         helpText="""
+<h1>Sync options</h1>
+<h2>Sync at startup/shutdown</h2>
+Setting both of these is functionally almost the same as using the AnkiWeb option.
+
 <h2>Sync after synchronizing with AnkiWeb</h2>
-This button is currently not wired up.  Please complain if you'd like to see this done.
+If you use Anki on Android, iOS or on the web, you should probably use this option.
 
-<h2>Multiple goals</h2>
-It's possible to sync to different and multiple goals, but also possible to send several metrics to the same goal.
-
-<h2>Sync number of additions</h2>
-You can select either the number of added cards or added notes to get reported to Beeminder.
-A single note can result in multiple cards being added, so it might make sense to e.g. Beemind the number of notes added if you want your goal to reflect the effort spent creating new content.
-Alternatively, you could Beemind the amount of cards added to keep those <b>below</b> a certain threshold!
+<h2>Sync with Beeminder menu option</h2>
+There's a new item in the menu bar under "Tools > Sync with Beeminder".
+Click this if you want to sync manually (exclusively or in addition to one or more of the automatic sync options).
 
 <h2>Use a single datapoint per day</h2>
 This setting is related to the aggregation setting Beeminder-side.
@@ -51,8 +51,40 @@ This means the add-on has to keep updating a single datapoint for each day.
 If you are a premium Beeminder user, you can request the add-on to keep sending new datapoints.
 This probably only makes sense with the premium aggregation settings such as "last" or "max."
 
-<h2>Contributing</h2>
-Please report bugs or feature requests over <a href="http://forum.beeminder.COM/t/announcing-beeminder-for-anki/2206">on this thread on the Beeminder forum</a> or help out <a href="https://github.com/ianmcb/beetime/">on GitHub</a>.
+<h2>Odometer style goals</h2>
+By default this add-on creates daily reports to Beeminder, e.g. it sends what you have done today or the status of your chosen metric on this day to Beeminder.
+If you want to send the totals since you have started to use Anki, use the "Report totals" options.
+You can use some <a href="http://forum.beeminder.com/t/restarting-odometer-to-non-zero-value/299/17">Beeminder trickery</a> if you want to.
+Reporting totals in this way allows you to miss a couple of days of uploading without losing data.
+E.g. if you did reviews for a couple of days on your mobile, but were unable to get access to a desktop to use this add-on and upload to Beeminder, you would not be able to get credit for the previous days if you used the default option.
+
+<h1>Goal types</h1>
+We are collecting your different uses of this add-on over <a src="http://forum.beeminder.COM/t/announcing-beeminder-for-anki/2206">on the Beeminder forum</a>. Come and share your workflow!
+
+<h2>Multiple goals</h2>
+It's possible to sync to different and multiple goals, but also possible to send several metrics to the same goal.
+
+<h2>Syncing review time and/or number of reviews</h2>
+You can only toggle odometer style goals for these two in tandem, using the "Report review totals" option.
+
+<h2>Sync number of additions</h2>
+You can select either the number of added cards or added notes to get reported to Beeminder.
+A single note can result in multiple cards being added, so it might make sense to e.g. Beemind the number of notes added if you want your goal to reflect the effort spent creating new content.
+Alternatively, you could Beemind the amount of cards added to keep those <b>below</b> a certain threshold!
+
+<h2>Sync number of cards due</h2>
+Due to the nature of this goal type, you cannot set this to be an "odometer" style goal.
+Use this goal type for example to Whittle Down a backlog of reviews (start at a number X and have a negative slope to make sure your backlog goes down steadily). Adding or learning lots of new cards does not prevent you from using the goal in this manner, since Beeminder would force you to do all the reviews caused by learning new cards in addition to whittling down your backlog. You are responsible for choosing a reasonable goal slope.
+Or use it to keep your review load at a steady level, e.g. a flat slope at 50. Configure the add-on to upload at startup, so that by virtue of starting Anki you are now on the hook to do your reviews if the total number due were over 50.
+
+<h1>Contributing</h1>
+Please report bugs or feature requests over <a src="http://forum.beeminder.COM/t/announcing-beeminder-for-anki/2206">on this thread on the Beeminder forum</a> or help out <a src="https://github.com/ianmcb/beetime/">on GitHub</a>.
+
+<h2>Known issues</h2>
+<ul>
+<li>The add-on doesn't try to fail gracefully in the case of no internet connection (or in any case really). This should not affect anything but you will get to see the error front and center.</li>
+<li>If you change the goalname in the add-on or if you delete a datapoint on the Beeminder website and you are using a "single datapoint per day", you may get a 404 error when trying to sync with Beeminder (because the add-on caches the datapoint, so it can re-use it, but it has become unavailable due to your changes of the settings). You can work around this by temporarily disabling the one datapoint per day setting <b>and</b> making sure the metric you are Beeminding has changed (e.g. you have done an extra review) before syncing with Beeminder manually. This should solve the issue. If it doesn't, you can still reset the settings which should definitely work.</li>
+</ul>
 """
         self.helpTextBrowser.setHtml(helpText)
         self.helpDialog.setMinimumWidth(480)
