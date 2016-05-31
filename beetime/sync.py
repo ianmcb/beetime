@@ -32,10 +32,9 @@ def syncDispatch(col=None, at=None):
 
     # upload all datapoints with an artificial time of 12 pm (noon)
     NOON = 12
+    reportDatetime = datetime.datetime(now.year, now.month, now.day, NOON)
     if now.hour < deadline:
-        reportDatetime = datetime.datetime(now.year, now.month, now.day - 1, NOON)
-    else:
-        reportDatetime = datetime.datetime(now.year, now.month, now.day, NOON)
+        reportDatetime -= datetime.timedelta(days=1)
     # convert the datetime object to a Unix timestamp
     reportTimestamp = time.mktime(reportDatetime.timetuple())
 
