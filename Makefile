@@ -4,6 +4,7 @@ git := /home/jan/beetime-git
 module := beetime
 lasttemp := /tmp/Anki.last
 settings := settings_layout
+icon := icon
 version := $(shell sed -n '/^\# Version: /p' <$(base).py | awk '{print $$3}')
 
 Anki.last := $(shell cat "$(lasttemp)")
@@ -18,13 +19,17 @@ zip: $(base).zip
 $(base).zip: ui
 	touch "$@"
 	rm "$@"
-	zip "$@" "$(base).py" "$(module)"/*py "$(module)"/beeminder.png
+	zip "$@" "$(base).py" "$(module)"/*py
 	mv "$@" "$(base)-$(version).zip"
 
 
-ui: $(module)/$(settings).py
+ui: $(module)/$(settings).py icon
 $(module)/$(settings).py: $(module)/$(settings).ui
 	pyuic4 "$<" > "$@"
+
+icon: $(module)/$(icon).py
+$(module)/$(icon).py: $(module)/$(icon).qrc
+	pyrcc4 "$<" > "$@"
 
 anki: ui | temp magic
 	$(anki) -b "$(Anki.temp)"

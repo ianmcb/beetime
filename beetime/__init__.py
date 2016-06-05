@@ -46,15 +46,16 @@ mw.onSync = wrap(mw.onSync, ankiwebSync, 'after')
 # click to sync button
 # --------------------
 from aqt.toolbar import Toolbar
+import icon
 
-def toolbarRightIconsList(_old):
+def addSyncButton(_old):
     ret = _old()
-    iconLocation = 'file://' + os.path.join(mw.pm.addonFolder(), 'beetime', 'beeminder.png')
-    new = ["beetime", iconLocation, _("Sync with Beeminder. Shortcut Key: Shift+M")]
-    return ret + [new]
+    toolTip = _("Sync with Beeminder. Shortcut Key: Shift+M")
+    icon = "qrc:/beetime/beeminder.png"
+    return ret + [["beetime", icon, toolTip]]
 
 mw.toolbar.link_handlers['beetime'] = lambda: syncDispatch(at='manual')
-mw.toolbar._rightIconsList = wrap(mw.toolbar._rightIconsList, toolbarRightIconsList, 'around')
+mw.toolbar._rightIconsList = wrap(mw.toolbar._rightIconsList, addSyncButton, 'around')
 
 # global sync shortcut
 # --------------------
