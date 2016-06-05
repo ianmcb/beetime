@@ -86,6 +86,9 @@ def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
     """
     bc = mw.bc
 
+    if not bc.tget('zeros') and value == 0:
+        return
+
     daystamp = getDaystamp(timestamp)
 
     user = bc.tget('username')

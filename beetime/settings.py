@@ -109,6 +109,7 @@ Please report bugs or feature requests over <a href="http://forum.beeminder.COM/
         self.ui.shutdown.setChecked(self.bc.tget('shutdown'))
         self.ui.ankiweb.setChecked(self.bc.tget('ankiweb'))
         self.ui.odo.setChecked(self.bc.tget('odo'))
+        self.ui.zeros.setChecked(self.bc.tget('zeros'))
 
         self.ui.time_units.setCurrentIndex(self.bc.get('time', 'units'))
         self.ui.added_type.setCurrentIndex(self.bc.get('added', 'type'))
@@ -146,6 +147,7 @@ Please report bugs or feature requests over <a href="http://forum.beeminder.COM/
         self.bc.tset('shutdown', self.ui.shutdown.isChecked())
         self.bc.tset('ankiweb', self.ui.ankiweb.isChecked())
         self.bc.tset('odo', self.ui.odo.isChecked())
+        self.bc.tset('zeros', self.ui.zeros.isChecked())
 
         self.bc.set('time', 'units', self.ui.time_units.currentIndex())
         self.bc.set('added', 'type', self.ui.added_type.currentIndex())

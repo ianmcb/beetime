@@ -81,6 +81,12 @@ class beeconf():
         if not "startup" in self.bee:
             self.nuke()
 
+        # upgrading from v1.7rc3
+        if not "zeros" in self.bee:
+            print("Upgrading from v1.7rc3...")
+            self.bee["zeros"] = True
+            self.store()
+
     def default(self):
         self.time_default = {
                 "enabled": False,
@@ -117,6 +123,7 @@ class beeconf():
                 "shutdown": False,
                 "ankiweb": False,
                 "odo": False,
+                "zeros": True,
                 "time": self.time_default,
                 "added": self.added_default,
                 "reviewed": self.reviewed_default,

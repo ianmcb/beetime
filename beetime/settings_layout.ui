@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>539</width>
-    <height>560</height>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>10</x>
      <y>10</y>
      <width>521</width>
-     <height>541</height>
+     <height>571</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="top_gridLayout">
@@ -47,7 +47,7 @@
          <x>10</x>
          <y>30</y>
          <width>461</width>
-         <height>174</height>
+         <height>202</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="general_gridLayout">
@@ -84,10 +84,10 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QCheckBox" name="ankiweb">
+        <item row="5" column="0">
+         <widget class="QCheckBox" name="odo">
           <property name="text">
-           <string>Sync after synchronizing with AnkiWeb</string>
+           <string>Report review totals</string>
           </property>
          </widget>
         </item>
@@ -98,10 +98,17 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
-         <widget class="QCheckBox" name="odo">
+        <item row="4" column="0">
+         <widget class="QCheckBox" name="ankiweb">
           <property name="text">
-           <string>Report review totals</string>
+           <string>Sync after synchronizing with AnkiWeb</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QCheckBox" name="zeros">
+          <property name="text">
+           <string>Report zero value datapoints</string>
           </property>
          </widget>
         </item>
@@ -111,7 +118,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>210</y>
+         <y>240</y>
          <width>501</width>
          <height>291</height>
         </rect>
@@ -221,8 +228,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>501</width>
-          <height>167</height>
+          <width>100</width>
+          <height>30</height>
          </rect>
         </property>
         <attribute name="label">
@@ -292,8 +299,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>501</width>
-          <height>167</height>
+          <width>100</width>
+          <height>30</height>
          </rect>
         </property>
         <attribute name="label">
@@ -391,8 +398,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>501</width>
-          <height>167</height>
+          <width>100</width>
+          <height>30</height>
          </rect>
         </property>
         <attribute name="label">
