@@ -1,0 +1,3 @@
+*.pyc
+*.zip
+beetime/settings_layout.py
