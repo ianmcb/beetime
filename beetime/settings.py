@@ -5,6 +5,18 @@ from aqt.qt import *
 
 from sync import BEE
 
+
+def set_deep_default(destination_dict, default_dict):
+    for k, v in default_dict.items():
+        print k, v
+        if type(v) == type({}):
+            destination_dict.setdefault(k, {})
+            set_deep_default(destination_dict[k], v)
+        else:
+            destination_dict.setdefault(k, v)
+    return destination_dict
+
+
 class BeeminderSettings(QDialog):
     """Create a settings menu."""
     def __init__(self):
@@ -80,6 +92,9 @@ class BeeminderSettings(QDialog):
         if self.mw.col.conf[BEE]['added']['type'] == "cards":
             self.mw.col.conf[BEE]['added']['type'] = 0
             print("Hotfix v1.6.1")
+
+        # set defaults for anything missing
+        set_deep_default(self.mw.col.conf, {BEE: defaultConfig})
 
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])
