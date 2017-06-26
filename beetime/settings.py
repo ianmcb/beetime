@@ -29,38 +29,25 @@ class BeeminderSettings(QDialog):
         self.connect(self.ui.buttonBox, SIGNAL("rejected()"), self.onReject)
         self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)
 
+
+        goalTypeConfig = {
+                "enabled": False,
+                "slug": "",
+                "did": None,
+                "lastupload": None,
+                "premium": False,
+                "overwrite": False,
+                "agg": 0}
+
         defaultConfig = {
                 "username": "",
                 "token": "",
                 "enabled": True,
                 "shutdown": False,
                 "ankiweb": False,
-                "time": {
-                    "enabled": False,
-                    "slug": "",
-                    "did": None,
-                    "lastupload": None,
-                    "units": 0,
-                    "premium": False,
-                    "overwrite": True,
-                    "agg": 0},
-                "added": {
-                    "enabled": False,
-                    "slug": "",
-                    "did": None,
-                    "type": 0,
-                    "lastupload": None,
-                    "premium": False,
-                    "overwrite": True,
-                    "agg": 0},
-                "reviewed": {
-                    "enabled": False,
-                    "slug": "",
-                    "did": None,
-                    "lastupload": None,
-                    "premium": False,
-                    "overwrite": True,
-                    "agg": 0}}
+                "time": dict(**goalTypeConfig, units=0),
+                "added": dict(**goalTypeConfig, type=0),
+                "reviewed": dict(**goalTypeConfig)}
 
         # for first-time users
         if not BEE in self.mw.col.conf:
@@ -68,23 +55,9 @@ class BeeminderSettings(QDialog):
 
         # for users upgrading from v1.2 (to v1.4+)
         if not "time" in self.mw.col.conf[BEE]:
-            # TODO: remove the duplication with defaultConfig (e.g. figure out
-            #       how to "add" dicts together)
-            goalTypeConfig = {
-                    "enabled": False,
-                    "slug": "",
-                    "did": None,
-                    "lastupload": None,
-                    "premium": False,
-                    "overwrite": False,
-                    "agg": 0}
-            self.mw.col.conf[BEE][u'time'] = goalTypeConfig
-            self.mw.col.conf[BEE]['time']['units'] = 0
+            # the things that are default values will get set at the end
             self.mw.col.conf[BEE]['time']['did'] = self.mw.col.conf[BEE]['did']
             self.mw.col.conf[BEE]['time']['lastupload'] = self.mw.col.conf[BEE]['lastupload']
-            self.mw.col.conf[BEE][u'added'] = goalTypeConfig
-            self.mw.col.conf[BEE]['added']['type'] = 0
-            self.mw.col.conf[BEE][u'reviewed'] = goalTypeConfig
             self.mw.col.setMod()
             print("Upgraded settings dict to enable caching & multiple goals")
 
