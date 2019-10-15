@@ -1,4 +1,6 @@
-from util import getDayStamp
+from beetime.settings import BEE
+from beetime.util import getDayStamp
+
 
 def getDataPointId(col, goal_type, timestamp):
     """ Compare the cached dayStamp with the current one, return
@@ -8,34 +10,25 @@ def getDataPointId(col, goal_type, timestamp):
     to save the new ID and dayStamp.
     Disregard mention of the second item in the tuple.
     """
-    from sync import BEE
-    if col.conf[BEE][goal_type]['overwrite'] and \
-       col.conf[BEE][goal_type]['lastupload'] == getDayStamp(timestamp):
+    if col.conf[BEE][goal_type]['overwrite'] and col.conf[BEE][goal_type]['lastupload'] == getDayStamp(timestamp):
         return col.conf[BEE][goal_type]['did']
-    else:
-        return None
+
 
 def formatComment(numberOfCards, reviewTime):
     from anki.lang import _, ngettext
     from anki.utils import fmtTimeSpan
 
-    # 2 lines ripped from the anki source
     msgp1 = ngettext("%d card", "%d cards", numberOfCards) % numberOfCards
-    comment = _("studied %(a)s in %(b)s") % dict(a=msgp1,
-            b=fmtTimeSpan(reviewTime, unit=1))
-    return comment
+    return _(f"studied {msgp1} in {fmtTimeSpan(reviewTime, unit=1)}")
+
 
 def lookupReviewed(col):
     """Lookup the number of cards reviewed and the time spent reviewing them."""
-    cardsReviewed, reviewTime = col.db.first("""
-select count(), sum(time)/1000 from revlog
-where id > ?""", (col.sched.dayCutoff - 86400) * 1000)
+    cardsReviewed, reviewTime = col.db.first(
+        "select count(), sum(time)/1000 from revlog where id > ?", (col.sched.dayCutoff - 86400) * 1000
+    )
+    return (cardsReviewed or 0, reviewTime or 0)
 
-    cardsReviewed = cardsReviewed or 0
-    reviewTime = reviewTime or 0
-
-    return (cardsReviewed, reviewTime)
 
 def lookupAdded(col, added='cards'):
-    cardsAdded = col.db.scalar("select count() from %s where id > %d" % (added, (col.sched.dayCutoff - 86400) * 1000))
-    return cardsAdded
+    return col.db.scalar("select count() from {} where id > {}".format(added, (col.sched.dayCutoff - 86400) * 1000))

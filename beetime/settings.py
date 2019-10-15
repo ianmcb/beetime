@@ -1,85 +1,44 @@
-from settings_layout import Ui_BeeminderSettings
+from PyQt5.QtWidgets import *
 
 from aqt import mw
 from aqt.qt import *
 
-from sync import BEE
+from beetime.layout import Ui_BeeminderSettings
+
+BEE = 'bee_conf'  # name of key in anki configuration dict
+
 
 class BeeminderSettings(QDialog):
     """Create a settings menu."""
+
     def __init__(self):
-        QDialog.__init__(self)
+        super().__init__()
 
         self.mw = mw
         self.ui = Ui_BeeminderSettings()
         self.ui.setupUi(self)
 
-        self.connect(self.ui.buttonBox, SIGNAL("rejected()"), self.onReject)
-        self.connect(self.ui.buttonBox, SIGNAL("accepted()"), self.onAccept)
+        self.ui.buttonBox.rejected.connect(self.onReject)
+        self.ui.buttonBox.accepted.connect(self.onAccept)
 
-        defaultConfig = {
-                "username": "",
-                "token": "",
-                "enabled": True,
-                "shutdown": False,
-                "ankiweb": False,
-                "time": {
-                    "enabled": False,
-                    "slug": "",
-                    "did": None,
-                    "lastupload": None,
-                    "units": 0,
-                    "premium": False,
-                    "overwrite": True,
-                    "agg": 0},
-                "added": {
-                    "enabled": False,
-                    "slug": "",
-                    "did": None,
-                    "type": 0,
-                    "lastupload": None,
-                    "premium": False,
-                    "overwrite": True,
-                    "agg": 0},
-                "reviewed": {
-                    "enabled": False,
-                    "slug": "",
-                    "did": None,
-                    "lastupload": None,
-                    "premium": False,
-                    "overwrite": True,
-                    "agg": 0}}
+        config = {
+            "username": "",
+            "token": "",
+            "enabled": True,
+            "shutdown": False,
+            "ankiweb": False,
+            "time": {"units": 0},
+            "added": {"type": 0},
+            "reviewed": {},
+        }
 
-        # for first-time users
-        if not BEE in self.mw.col.conf:
-            self.mw.col.conf[BEE] = defaultConfig
+        extra_params = dict(enabled=False, slug="", did=None, lastupload=None, premium=False, overwrite=True, agg=0)
+        for k in ['time', 'added', 'reviewed']:
+            config[k].update(extra_params)
 
-        # for users upgrading from v1.2 (to v1.4+)
-        if not "time" in self.mw.col.conf[BEE]:
-            # TODO: remove the duplication with defaultConfig (e.g. figure out
-            #       how to "add" dicts together)
-            goalTypeConfig = {
-                    "enabled": False,
-                    "slug": "",
-                    "did": None,
-                    "lastupload": None,
-                    "premium": False,
-                    "overwrite": False,
-                    "agg": 0}
-            self.mw.col.conf[BEE][u'time'] = goalTypeConfig
-            self.mw.col.conf[BEE]['time']['units'] = 0
-            self.mw.col.conf[BEE]['time']['did'] = self.mw.col.conf[BEE]['did']
-            self.mw.col.conf[BEE]['time']['lastupload'] = self.mw.col.conf[BEE]['lastupload']
-            self.mw.col.conf[BEE][u'added'] = goalTypeConfig
-            self.mw.col.conf[BEE]['added']['type'] = 0
-            self.mw.col.conf[BEE][u'reviewed'] = goalTypeConfig
-            self.mw.col.setMod()
-            print("Upgraded settings dict to enable caching & multiple goals")
-
-        # for users upgrading from v1.6
-        if self.mw.col.conf[BEE]['added']['type'] == "cards":
-            self.mw.col.conf[BEE]['added']['type'] = 0
-            print("Hotfix v1.6.1")
+        self.mw.col.conf.setdefault(BEE, config)
+        self.show()
+        self.raise_()
 
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])
@@ -131,22 +90,25 @@ class BeeminderSettings(QDialog):
         self.mw.col.conf[BEE]['time']['premium'] = self.ui.time_premium.isChecked()
         self.mw.col.conf[BEE]['time']['agg'] = self.ui.time_agg.currentIndex()
 
-        self.mw.col.conf[BEE]['time']['overwrite'] = self.setOverwrite(self.mw.col.conf[BEE]['time']['premium'],
-                                                                       self.mw.col.conf[BEE]['time']['agg'])
+        self.mw.col.conf[BEE]['time']['overwrite'] = self.setOverwrite(
+            self.mw.col.conf[BEE]['time']['premium'], self.mw.col.conf[BEE]['time']['agg']
+        )
 
         self.mw.col.conf[BEE]['reviewed']['slug'] = self.ui.reviewed_slug.text()
         self.mw.col.conf[BEE]['reviewed']['enabled'] = self.ui.reviewed_enabled.isChecked()
         self.mw.col.conf[BEE]['reviewed']['premium'] = self.ui.reviewed_premium.isChecked()
         self.mw.col.conf[BEE]['reviewed']['agg'] = self.ui.reviewed_agg.currentIndex()
-        self.mw.col.conf[BEE]['reviewed']['overwrite'] = self.setOverwrite(self.mw.col.conf[BEE]['reviewed']['premium'],
-                                                                           self.mw.col.conf[BEE]['reviewed']['agg'])
+        self.mw.col.conf[BEE]['reviewed']['overwrite'] = self.setOverwrite(
+            self.mw.col.conf[BEE]['reviewed']['premium'], self.mw.col.conf[BEE]['reviewed']['agg']
+        )
 
         self.mw.col.conf[BEE]['added']['slug'] = self.ui.added_slug.text()
         self.mw.col.conf[BEE]['added']['enabled'] = self.ui.added_enabled.isChecked()
         self.mw.col.conf[BEE]['added']['premium'] = self.ui.added_premium.isChecked()
         self.mw.col.conf[BEE]['added']['agg'] = self.ui.added_agg.currentIndex()
-        self.mw.col.conf[BEE]['added']['overwrite'] = self.setOverwrite(self.mw.col.conf[BEE]['added']['premium'],
-                                                                        self.mw.col.conf[BEE]['added']['agg'])
+        self.mw.col.conf[BEE]['added']['overwrite'] = self.setOverwrite(
+            self.mw.col.conf[BEE]['added']['premium'], self.mw.col.conf[BEE]['added']['agg']
+        )
 
         self.mw.col.setMod()
 

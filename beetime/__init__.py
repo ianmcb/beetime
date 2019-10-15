@@ -1,28 +1,32 @@
-from settings import BeeminderSettings
-from sync import syncDispatch
+from beetime.settings import BeeminderSettings
+from beetime.sync import syncDispatch
 
 from anki.hooks import addHook
 
 from aqt import mw
-from aqt.qt import QAction, SIGNAL
+from aqt.qt import *
 
 # settings menu item
 # ------------------
 dialog = None
+
+
 def openBeeminderSettings():
     global dialog
     if dialog is None:
         dialog = BeeminderSettings()
     dialog.display(mw)
 
-openSettings = QAction("Setup Beeminder sync...", mw)
-mw.connect(openSettings, SIGNAL("triggered()"), openBeeminderSettings)
-mw.form.menuTools.addAction(openSettings)
+
+mw.addonManager.setConfigAction(__name__, openBeeminderSettings)
+# openSettings = QAction("Setup Beeminder sync...", mw)
+# openSettings.triggered.connect(openBeeminderSettings)
+# mw.form.menuTools.addAction(openSettings)
 
 # manual sync menu item
 # ---------------------
 manualSync = QAction("Sync with Beeminder", mw)
-mw.connect(manualSync, SIGNAL("triggered()"), lambda: syncDispatch(at='manual'))
+manualSync.triggered.connect(lambda: syncDispatch(at='manual'))
 mw.form.menuTools.addAction(manualSync)
 
 # sync at shutdown hook
