@@ -13,15 +13,14 @@ dialog = None
 
 def openBeeminderSettings():
     global dialog
-    if dialog is None:
-        dialog = BeeminderSettings()
-    dialog.display(mw)
+    dialog = dialog or BeeminderSettings()
+    dialog.exec_()
 
 
 mw.addonManager.setConfigAction(__name__, openBeeminderSettings)
-# openSettings = QAction("Setup Beeminder sync...", mw)
-# openSettings.triggered.connect(openBeeminderSettings)
-# mw.form.menuTools.addAction(openSettings)
+openSettings = QAction("Configure Beeminder Options...", mw)
+openSettings.triggered.connect(lambda _: openBeeminderSettings())
+mw.form.menuTools.addAction(openSettings)
 
 # manual sync menu item
 # ---------------------
