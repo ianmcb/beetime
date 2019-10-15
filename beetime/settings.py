@@ -1,11 +1,15 @@
+import json
+import os
+
 from PyQt5.QtWidgets import *
 
 from aqt import mw
 from aqt.qt import *
 
-from beetime.layout import Ui_BeeminderSettings
+from beetime.settings_layout import Ui_BeeminderSettings
 
-BEE = 'bee_conf'  # name of key in anki configuration dict
+BEE = 'bee_conf'  # Name of key in anki configuration dict
+CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'resources', 'config.json')
 
 
 class BeeminderSettings(QDialog):
@@ -20,25 +24,10 @@ class BeeminderSettings(QDialog):
 
         self.ui.buttonBox.rejected.connect(self.onReject)
         self.ui.buttonBox.accepted.connect(self.onAccept)
-
-        config = {
-            "username": "",
-            "token": "",
-            "enabled": True,
-            "shutdown": False,
-            "ankiweb": False,
-            "time": {"units": 0},
-            "added": {"type": 0},
-            "reviewed": {},
-        }
-
-        extra_params = dict(enabled=False, slug="", did=None, lastupload=None, premium=False, overwrite=True, agg=0)
-        for k in ['time', 'added', 'reviewed']:
-            config[k].update(extra_params)
-
+    
+        with open(CONFIG_FILE) as fh:
+            config = json.load(fh)
         self.mw.col.conf.setdefault(BEE, config)
-        self.show()
-        self.raise_()
 
     def display(self, parent):
         self.ui.username.setText(self.mw.col.conf[BEE]['username'])

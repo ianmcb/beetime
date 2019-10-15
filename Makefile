@@ -11,4 +11,4 @@ $(base): ui
 
 
 ui:
-	pyuic4 beetime/settings_layout.ui >beetime/settings_layout.py
+	pyuic5 beetime/resources/layout/settings.ui >beetime/settings_layout.py
