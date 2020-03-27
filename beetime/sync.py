@@ -4,7 +4,7 @@ import time
 from aqt import mw, progress
 
 from beetime.api import getApi, sendApi
-from beetime.lookup import lookupReviewed, formatComment, lookupAdded
+from beetime.lookup import lookupReviewed, formatComment, lookupAdded, getDataPointId
 from beetime.util import getDayStamp
 from beetime.settings import BEE
 
