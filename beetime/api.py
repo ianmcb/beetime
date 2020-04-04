@@ -26,7 +26,7 @@ def apiCall(method, user, token, slug, data, did):
     """
 
     cmd = "datapoints"
-    base = f"http://www.beeminder.com/api/v1/users/{user}/goals/{slug}"
+    base = f"https://www.beeminder.com/api/v1/users/{user}/goals/{slug}/"
     if method == "POST" and did is not None:
         url = urljoin(base, f"{cmd}/{did}.json")
         method = "PUT"
