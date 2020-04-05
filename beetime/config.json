@@ -2,7 +2,7 @@
 {
   "username": "",
   "token": "",
-  "enabled": true,
+  "enabled": false,
   "shutdown": false,
   "ankiweb": false,
   "time": {
