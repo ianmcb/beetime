@@ -1,14 +1,13 @@
 base := Beeminder_Sync
-version := $(shell sed -n '/^\# Version: /p' <$(base).py | awk '{print $$3}')
 
 default: $(base)
 
-$(base): ui
-	touch $@.zip
-	rm $@.zip
-	zip $@.zip $@.py beetime/*py
-	mv $@.zip $@-$(version).zip
-
+$(base): clean ui
+	zip -jr beetime.ankiaddon beetime
 
 ui:
-	pyuic4 beetime/settings_layout.ui >beetime/settings_layout.py
+	pyuic5 resources/layout/config.ui > beetime/config_layout.py
+
+clean:
+	rm -f beetime.ankiaddon
+	rm -f beetime/config_layout.py

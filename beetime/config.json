@@ -1,0 +1,37 @@
+
+{
+  "username": "",
+  "token": "",
+  "enabled": false,
+  "shutdown": false,
+  "ankiweb": false,
+  "time": {
+    "agg": 0,
+    "did": null,
+    "enabled": false,
+    "lastupload": null,
+    "overwrite": true,
+    "premium": false,
+    "slug": "",
+    "units": 0
+  },
+  "added": {
+    "agg": 0,
+    "did": null,
+    "enabled": false,
+    "lastupload": null,
+    "overwrite": true,
+    "premium": false,
+    "slug": "",
+    "type": 0
+  },
+  "reviewed": {
+    "agg": 0,
+    "did": null,
+    "enabled": false,
+    "lastupload": null,
+    "overwrite": true,
+    "premium": false,
+    "slug": ""
+  }
+}

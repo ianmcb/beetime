@@ -1,46 +1,45 @@
-import httplib, urllib
 import json
+from urllib.parse import urlencode
 
-def getApi(user, token, slug):
+import requests
+from requests.compat import urljoin
+
+
+def get_api(user, token, slug):
     """Get and return the datapoints for a given goal from Beeminder."""
-    return apiCall("GET", user, token, slug, None, None)
+    return api_call("GET", user, token, slug, None, None)
 
-def sendApi(user, token, slug, data, did=None):
+
+def send_api(user, token, slug, data, did=None):
     """Send or update a datapoint to a given Beeminder goal. If a
     datapoint ID (did) is given, the existing datapoint is updated.
     Otherwise a new datapoint is created. Returns the datapoint ID
     for use in caching.
     """
-    response = apiCall("POST", user, token, slug, data, did)
-    return json.loads(response)['id']
+    response = api_call("POST", user, token, slug, data, did)
+    return json.loads(response)["id"]
 
-def apiCall(requestType, user, token, slug, data, did):
+
+def api_call(method, user, token, slug, data, did):
     """Prepare an API request.
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
-    base = "www.beeminder.com"
+
     cmd = "datapoints"
-    api = "/api/v1/users/%s/goals/%s/%s.json" % (user, slug, cmd)
-    # if we have a datapoint ID, update an existing datapoint with PUT
-    # otherwise POST a new one, with ID None
-    if requestType == "POST" and did is not None:
-        api = "/api/v1/users/%s/goals/%s/%s/%s.json" % (user, slug, cmd, did)
-        requestType = "PUT"
-
-    headers = {"Content-type": "application/x-www-form-urlencoded",
-               "Accept": "text/plain"}
-
-    if requestType == "GET":
-        params = urllib.urlencode({"auth_token": token})
+    base = f"https://www.beeminder.com/api/v1/users/{user}/goals/{slug}/"
+    if method == "POST" and did is not None:
+        url = urljoin(base, f"{cmd}/{did}.json")
+        method = "PUT"
     else:
-        params = urllib.urlencode(data)
+        url = urljoin(base, f"{cmd}.json")
 
-    conn = httplib.HTTPSConnection(base)
-    conn.request(requestType, api, params, headers)
-    response = conn.getresponse()
-    if not response.status == 200:
-        raise Exception("transmission failed:", response.status, response.reason, response.read())
-    responseBody = response.read()
-    conn.close()
-    return responseBody
+    headers = {
+        "Content-type": "application/x-www-form-urlencoded",
+        "Accept": "text/plain",
+    }
+    params = urlencode({"auth_token": token} if method == "GET" else data)
+
+    response = requests.request(method, url, headers=headers, data=params)
+    response.raise_for_status()
+    return response.text

@@ -1,91 +1,98 @@
-BEE = 'bee_conf' # name of key in anki configuration dict
+import datetime
+import time
 
 from aqt import mw, progress
+from beetime.api import send_api
+from beetime.lookup import format_comment, get_data_point_id, lookup_added, lookup_reviewed
+from beetime.config import BeeminderSettings
+from beetime.util import get_day_stamp
 
-from util import getDayStamp
-from api import getApi, sendApi
-from lookup import *
+NOON = 12
+SECONDS_PER_MINUTE = 60
 
-import datetime, time
 
-def syncDispatch(col=None, at=None):
+def sync_dispatch(col=None, at=None):
     """Tally the time spent reviewing and send it to Beeminder.
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
+
     col = col or mw.col
     if col is None:
         return
 
-    if at == 'shutdown' and not col.conf[BEE]['shutdown'] or \
-            at == 'ankiweb' and not col.conf[BEE]['ankiweb'] or \
-            not col.conf[BEE]['enabled']:
-        return
+    config = BeeminderSettings.read()
+
+    try:
+        if (
+            at == "shutdown"
+            and not config["shutdown"]
+            or at == "ankiweb"
+            and not config["ankiweb"]
+            or not config["enabled"]
+        ):
+            return
+    except:
+        raise RuntimeError(config)
 
     mw.progress.start(immediate=True)
     mw.progress.update("Syncing with Beeminder...")
 
-    # dayCutoff is the Unix timestamp of the user-set deadline
-    # deadline is the hour after which we consider a new day to have started
     deadline = datetime.datetime.fromtimestamp(col.sched.dayCutoff).hour
     now = datetime.datetime.today()
 
     # upload all datapoints with an artificial time of 12 pm (noon)
-    NOON = 12
-    reportDatetime = datetime.datetime(now.year, now.month, now.day, NOON)
+    report_dt = datetime.datetime(now.year, now.month, now.day, NOON)
     if now.hour < deadline:
-        reportDatetime -= datetime.timedelta(days=1)
-    # convert the datetime object to a Unix timestamp
-    reportTimestamp = time.mktime(reportDatetime.timetuple())
+        report_dt -= datetime.timedelta(days=1)
+    report_ts = report_dt.timestamp()
 
-    if isEnabled('time') or isEnabled('reviewed'):
-        numberOfCards, reviewTime = lookupReviewed(col)
-        comment = formatComment(numberOfCards, reviewTime)
+    if is_enabled("time") or is_enabled("reviewed"):
+        n_cards, review_time = lookup_reviewed(col)
+        comment = format_comment(n_cards, review_time)
 
-        if isEnabled('time'):
-            # convert seconds to hours (units is 0) or minutes (units is 1)
-            # keep seconds if units is 2
-            units = col.conf[BEE]['time']['units']
-            if units is 0:
-                reviewTime /= 60.0 * 60.0
-            elif units is 1:
-                reviewTime /= 60.0
-            # report time spent reviewing
-            prepareApiCall(col, reportTimestamp, reviewTime, comment)
+        if is_enabled("time"):
+            units = config["time"]["units"]
+            while units < 2:
+                review_time /= SECONDS_PER_MINUTE
+                units += 1
+            prepare_api_call(col, report_ts, review_time, comment)
 
-        if isEnabled('reviewed'):
-            # report number of cards reviewed
-            prepareApiCall(col, reportTimestamp, numberOfCards, comment, goal_type='reviewed')
+        if is_enabled("reviewed"):
+            prepare_api_call(col, report_ts, n_cards, comment, goal_type="reviewed")
 
-    if isEnabled('added'):
-        added = ["cards", "notes"][col.conf[BEE]['added']['type']]
-        numberAdded = lookupAdded(col, added)
-        # report number of cards or notes added
-        prepareApiCall(col, reportTimestamp, numberAdded,
-                "added %d %s" % (numberAdded, added), goal_type='added')
+    if is_enabled("added"):
+        added = ["cards", "notes"][config["added"]["type"]]
+        n_added = lookup_added(col, added)
+        prepare_api_call(
+            col, report_ts, n_added, f"added {n_added} {added}", goal_type="added",
+        )
 
     mw.progress.finish()
 
-def prepareApiCall(col, timestamp, value, comment, goal_type='time'):
+
+def prepare_api_call(col, timestamp, value, comment, goal_type="time"):
     """Prepare the API call to beeminder.
 
     Based on code by: muflax <mail@muflax.com>, 2012
     """
-    user = col.conf[BEE]['username']
-    token = col.conf[BEE]['token']
-    slug = col.conf[BEE][goal_type]['slug']
+    config = BeeminderSettings.read()
+    user = config["username"]
+    token = config["token"]
+    slug = config[goal_type]["slug"]
     data = {
         "timestamp": timestamp,
         "value": value,
         "comment": comment,
-        "auth_token": token}
+        "auth_token": token,
+    }
 
-    cachedDatapointId = getDataPointId(col, goal_type, timestamp)
+    cached_data_point_id = get_data_point_id(col, goal_type, timestamp)
 
-    newDatapointId = sendApi(user, token, slug, data, cachedDatapointId)
-    col.conf[BEE][goal_type]['lastupload'] = getDayStamp(timestamp)
-    col.conf[BEE][goal_type]['did'] = newDatapointId
+    config[goal_type]["lastupload"] = get_day_stamp(timestamp)
+    config[goal_type]["did"] = send_api(user, token, slug, data, cached_data_point_id)
     col.setMod()
 
-def isEnabled(goal):
-    return mw.col.conf[BEE][goal]['enabled']
+
+def is_enabled(goal):
+    return BeeminderSettings.read()[goal]["enabled"]
